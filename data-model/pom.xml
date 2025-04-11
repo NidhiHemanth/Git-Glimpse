@@ -10,11 +10,79 @@
     </parent>
 
     <artifactId>data-model</artifactId>
+    <name>data-model</name>
+    <description>GitHub Data Model</description>
 
     <properties>
+        <java.version>11</java.version>
         <maven.compiler.source>23</maven.compiler.source>
         <maven.compiler.target>23</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.0.9</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <!-- Supports integration with Spring Data JPA.
+                 Used for interacting with relation database using ORM.
+                 For example, Entity & Repository -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <!-- Helps in building web applications (RESTful services & others).
+                 Sets up Tomcat server, enables Spring MVC, includes libraries like Jackson.
+                 For example, RestController -->
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.9</version>
+            <!-- Integrates Springdoc OpenAPI to automatically generate documentation to the exposed RESTful APIs.
+                 It also provides Swagger UI endpoint -->
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+            <!-- Set up lightweight database without any installation / configuration.
+                 Creates an embedded, temporary database for development / testing -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+            <!-- Helps reduce boilerplate code at compile time using Annotations -->
+        </dependency>
+    </dependencies>
+
+    <!-- Used to configure the specific Java compatibility versions -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
