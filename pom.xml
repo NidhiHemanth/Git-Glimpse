@@ -12,6 +12,8 @@
     <modules>
         <module>data-model</module>
         <module>data-ingest</module>
+        <module>app-frontend</module>
+        <module>app-backend</module>
     </modules>
 
     <properties>
