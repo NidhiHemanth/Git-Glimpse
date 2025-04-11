@@ -33,6 +33,7 @@ public class GithubUser {
     @Version
     @Transient
     @Column
+    @Builder.Default
     private long version = -1L;
 
     @NotBlank
