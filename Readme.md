@@ -25,4 +25,4 @@ Sample data: https://api.github.com/users/sn99/repos
 
 ## TODO
 
--[ ] API module: DTO & mappers
+- [ ] API module: DTO & mappers
