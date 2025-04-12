@@ -1,0 +1,17 @@
+# Hibernate, JDBC & SQL configurations
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  datasource:
+    url: jdbc:mariadb://localhost:3306/github
+    username: root
+    password: nini69
+    driver-class-name: org.mariadb.jdbc.Driver
+
+# Logging levels configuration
+logging:
+
+ref:
+  inputDir: ${INPUT_DIR}
