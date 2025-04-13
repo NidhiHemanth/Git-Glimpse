@@ -19,9 +19,8 @@ An alternative to this method would be to use a library like `jsonschema2pojo` t
 
 ## Input Specification
 
-Add the path to your JSON files to the field `ref.inputDir` in `application.yml` file of data-ingest module. 
-
-Sample data: https://api.github.com/users/sn99/repos
+Add the path to your JSON files to the field `ref.inputDir` in `application-local.yml` file of data-ingest module. 
+Then set the `spring.profiles.active=local` while running your Batch application.
 
 ## TODO
 

@@ -1,0 +1,38 @@
+[
+  {
+    "username": "sn99",
+    "fullName": "Siddharth",
+    "email": null,
+    "bio": "\ud83e\udd54 all hail potatoes",
+    "followers": 56,
+    "following": 72,
+    "mostStarredProject": {
+      "projectName": "sn99/brainhug",
+      "description": "A simple brainfuck translator crate in Rust",
+      "language": "Rust",
+      "stargazersCount": 21,
+      "forksCount": 12,
+      "htmlUrl": "https://github.com/sn99/brainhug"
+    },
+    "profileUrl": "https://github.com/sn99",
+    "avatarUrl": "https://avatars.githubusercontent.com/u/42946112?v=4"
+  },
+  {
+    "username": "nidhihemanth",
+    "fullName": "Nidhi Hemanth",
+    "email": null,
+    "bio": "Learning new things everyday",
+    "followers": 15,
+    "following": 16,
+    "mostStarredProject": {
+      "projectName": "NidhiHemanth/Cipher-It",
+      "description": "A Java application built around Cryptography, used to encrypt & decrypt input data provided by the user.",
+      "language": "Java",
+      "stargazersCount": 1,
+      "forksCount": 1,
+      "htmlUrl": "https://github.com/NidhiHemanth/Cipher-It"
+    },
+    "profileUrl": "https://github.com/NidhiHemanth",
+    "avatarUrl": "https://avatars.githubusercontent.com/u/59618904?v=4"
+  }
+]

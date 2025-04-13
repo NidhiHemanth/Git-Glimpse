@@ -5,15 +5,7 @@
     "bio": "",
     "followers": "",
     "following": "",
-    "githubProjects": {
-        "projectName":"",
-        "description":"",
-        "language":"",
-        "stargazersCount":"",
-        "forksCount":"",
-        "htmlUrl":""
-    },
-    "starredProjects": {
+    "mostStarredProject": {
         "projectName":"",
         "description":"",
         "language":"",

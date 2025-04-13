@@ -9,8 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 /*
  @Data - generates all the boilerplate code for a POJO
  @Builder - implements the Builder pattern
@@ -64,10 +62,7 @@ public class GithubUser {
             @AttributeOverride(name = "htmlUrl", column = @Column(name = "project_url"))
     })
     @Column(name = "projects")
-    private List<GithubProjects> githubProjects;
-
-    @Column(name = "starred_projects")
-    private List<GithubProjects> starredProjects;
+    private GithubProject mostStarredProject;
 
     @Column(name = "profile_url")
     private String profileUrl;

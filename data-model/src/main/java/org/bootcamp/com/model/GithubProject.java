@@ -18,7 +18,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GithubProjects implements Serializable {
+public class GithubProject implements Serializable {
     @NotBlank
     private String projectName;
 
