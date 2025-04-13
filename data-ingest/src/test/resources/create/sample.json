@@ -1,0 +1,26 @@
+{
+    "username": "",
+    "fullName": "",
+    "email": "",
+    "bio": "",
+    "followers": "",
+    "following": "",
+    "githubProjects": {
+        "projectName":"",
+        "description":"",
+        "language":"",
+        "stargazersCount":"",
+        "forksCount":"",
+        "htmlUrl":""
+    },
+    "starredProjects": {
+        "projectName":"",
+        "description":"",
+        "language":"",
+        "stargazersCount":"",
+        "forksCount":"",
+        "htmlUrl":""
+    },
+    "profileUrl": "",
+    "avatarUrl": ""
+}
