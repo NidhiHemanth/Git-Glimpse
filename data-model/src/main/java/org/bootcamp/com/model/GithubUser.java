@@ -34,7 +34,6 @@ public class GithubUser {
     @Builder.Default
     private long version = -1L;
 
-    @NotBlank
     @Size(max = 100)
     @Column(name = "full_name")
     private String fullName;
