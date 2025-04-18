@@ -4,15 +4,23 @@ spring:
     name: BatchProcessing
   jpa:
     hibernate:
+      # Standard Hibernate property values are - none, validate, update, create, create-drop
       ddl-auto: update
     show-sql: true
   datasource:
+    hikari:
+      # Hikari is a high-performance, lightweight connection pooling library
+      # It provides a pool of pre-established database connections,
+      # eliminating the overhead of creating a new connection each time the application needs one
+      maximum-pool-size: 10
     url: jdbc:mariadb://localhost:3306/github?useUnicode=true&characterEncoding=utf8mb4&connectionCollation=utf8mb4_unicode_ci
     username: root
     password: nini69
     driver-class-name: org.mariadb.jdbc.Driver
   batch:
     job:
+      # Disable the initial job execution.
+      # By default, Spring runs the job after the context startup with empty parameters
       enabled: false
     jdbc:
       initialize-schema: ALWAYS
@@ -20,10 +28,12 @@ spring:
 # Logging levels configuration
 logging:
   level:
-    root: "warn"
-    org.bootcamp.com: "debug"
-    org.springframework.web: "debug"
-    org.hibernate: "error"
+    root: WARN
+    org.bootcamp.com: DEBUG
+    org.springframework: INFO
+    org.hibernate: ERROR
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
 
 ref:
   inputDir: ${INPUT_DIR}

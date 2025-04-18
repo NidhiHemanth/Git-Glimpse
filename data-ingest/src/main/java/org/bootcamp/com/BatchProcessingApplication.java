@@ -1,5 +1,8 @@
 package org.bootcamp.com;
 
+import lombok.extern.slf4j.Slf4j;
+import org.bootcamp.com.config.ApplicationProperties;
+import org.bootcamp.com.constants.Constants;
 import org.bootcamp.com.exception.JobExecutionFailedException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -12,7 +15,10 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 /*
@@ -27,6 +33,7 @@ import org.springframework.context.annotation.Bean;
  */
 
 @SpringBootApplication
+@Slf4j
 public class BatchProcessingApplication {
     @Autowired
     private JobLauncher jobLauncher;
@@ -34,21 +41,37 @@ public class BatchProcessingApplication {
     private Job job;
 
     public static void main(String[] args) {
-        SpringApplication.run(BatchProcessingApplication.class);
+        // WebApplicationType.NONE is required otherwise SpringBoot starts web servers automatically
+        // Default WebApplicationType is SERVLET
+        SpringApplication application = new SpringApplicationBuilder()
+                                            .sources(BatchProcessingApplication.class)
+                                            .web(WebApplicationType.NONE)
+                                            .build();
+        ConfigurableApplicationContext applicationContext = application.run(args);
+
+        // Beans can be fetched like this
+        ApplicationProperties applicationProperties = (ApplicationProperties) applicationContext.getBean("applicationProperties");
+        log.info("Application Properties : inputDir {}", applicationProperties.getInputDir());
+
+        // Important to Control Shut down in Batch Processing applications (non-web)
+        int exitCode = SpringApplication.exit(applicationContext);
+        System.exit(exitCode);
     }
 
     @Bean
     public CommandLineRunner runBatchJob() {
         return args -> {
             JobParameters jobParameters = new JobParametersBuilder()
+                    .addString(Constants.MANIFEST, "manifest.json")
+                    .addString(Constants.DATA_FILE, "GitHub_Users.json")
                     .addLong("startAt", System.currentTimeMillis())
                     .toJobParameters();
 
             try {
-                System.out.println("Starting the batch job...");
+                log.info("Starting the batch job...");
                 jobLauncher.run(job, jobParameters);
             } catch (JobInstanceAlreadyCompleteException | JobExecutionAlreadyRunningException | JobParametersInvalidException | JobRestartException | JobExecutionFailedException e) {
-                System.err.println("Job failed with exception: " + e.getMessage());
+                log.error("Job failed with exception: {}", e.getMessage());
             }
         };
     }
