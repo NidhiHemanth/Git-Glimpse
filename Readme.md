@@ -11,7 +11,12 @@ This module contains the Data Transfer Objects (DTO) required to map the JSON da
 This module contains the batch processing code to :
 1. Read data from bulk JSON files
 2. Process and validate the data in those files
-3. Persist the data into an H2 database
+3. Persist the data into an MariaDB (SQL) database
+
+Make sure you have MariaDB set up, with a database called `github`.
+Execute the following command to change the character set of the Database to support all Unicode characters (in case your data has emojis or special symbols).
+
+`ALTER DATABASE github CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;`
 
 An alternative to this method would be to use a library like `jsonschema2pojo` to convert JSON Schema / data into Java POJOs (Plain Old Java Objects).
 - It deserializes JSON into Java objects (via libraries like Jackson or Gson).
