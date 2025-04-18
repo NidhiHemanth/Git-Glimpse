@@ -22,6 +22,16 @@ An alternative to this method would be to use a library like `jsonschema2pojo` t
 - It deserializes JSON into Java objects (via libraries like Jackson or Gson).
 - It generates classes that represent data structures coming from REST APIs that use JSON.
 
+### 3) _app-backend_
+
+This module contains APIs to perform various operations on the GitHub Users data.
+- It allows filtering of data on selected fields
+- It allows sorting of the resultant data
+- The API supports infinite scroll feature of ag-grid
+
+The APIs are exposed on Swagger UI / can also be accessed over Postman.
+OAS3 documentation will also be available for the APIs.
+
 ## Input Specification
 
 Add the path to your JSON files to the field `ref.inputDir` in `application-local.yml` file of data-ingest module. 
