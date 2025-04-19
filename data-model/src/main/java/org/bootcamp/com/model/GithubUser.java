@@ -24,6 +24,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class GithubUser {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotBlank(groups = OnCreate.class)
     @Column(name = "username")
     private String username;
