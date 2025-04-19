@@ -1,6 +1,7 @@
 package org.bootcamp.com.repository;
 
 import org.bootcamp.com.model.GithubUser;
+import org.bootcamp.com.model.GithubUserId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface GithubRepository extends JpaRepository<GithubUser, Long> {
+public interface GithubRepository extends JpaRepository<GithubUser, GithubUserId> {
 
 }

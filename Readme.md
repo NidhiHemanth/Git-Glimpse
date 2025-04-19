@@ -49,6 +49,9 @@ This module contains the UI implementation done using React JS.
     - You are also given an option to delete the user's record from the database
 - Export the entire database content to an Excel sheet (not just the one displayed)
 
+_NOTE:_ Sorting & Filtering are being done on the backend (not frontend) since 
+we don't have all the data available because infinite scroll loads data in chunks.
+
 ## Input Specification
 
 Add the path to your JSON files to the field `ref.inputDir` in `application-local.yml` file of data-ingest module. 

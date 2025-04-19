@@ -20,6 +20,7 @@ import org.springframework.batch.core.job.CompositeJobParametersValidator;
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemWriter;
@@ -111,10 +112,11 @@ public class SpringBatchConfig {
 //                .taskExecutor(taskExecutor())                         // TODO: fix taskExecutor impl
                 .writer(writer())
                 .faultTolerant()
-                .processorNonTransactional()
+                .processorNonTransactional()                            // If one item in a chunk fails, the whole chunk is not rolled back
                 .skip(DataValidationException.class)                    // If database does not support utf8mb4 characters, some users will be skipped
                 .skipLimit(10)
                 .listener(recordCountListener())
+                .listener(chunkLoggingListener())
                 .build();
     }
 
@@ -169,6 +171,44 @@ public class SpringBatchConfig {
                 }
 
                 return stepExecution.getExitStatus();
+            }
+        };
+    }
+
+    @Bean ChunkListener chunkLoggingListener() {
+        return new ChunkListener() {
+            private long previousRead = 0;
+            private long previousWrite = 0;
+
+            @Override
+            public void afterChunk(ChunkContext context) {
+                StepExecution stepExecution = context.getStepContext().getStepExecution();
+
+                long currentRead = stepExecution.getReadCount();
+                long currentWrite = stepExecution.getWriteCount();
+                long currentProcessSkip = stepExecution.getProcessSkipCount();
+                long currentWriteSkip = stepExecution.getWriteSkipCount();
+                long currentSkip = stepExecution.getSkipCount();
+
+                long chunkRead = currentRead - previousRead;
+                long chunkWrite = currentWrite - previousWrite;
+
+                previousRead = currentRead;
+                previousWrite = currentWrite;
+
+                log.info("Chunk completed: {} read, {} written, {} skipped - {} in processor & {} in writer", chunkRead, chunkWrite, currentSkip, currentProcessSkip, currentWriteSkip);
+            }
+
+            @Override
+            public void afterChunkError(ChunkContext context) {
+                StepExecution stepExecution = context.getStepContext().getStepExecution();
+                Throwable error = stepExecution.getFailureExceptions().isEmpty() ? null : stepExecution.getFailureExceptions().get(0);
+
+                log.error("\tChunk failed!");
+                if (error != null) {
+                    error.printStackTrace();
+                    throw new DataValidationException(error);
+                }
             }
         };
     }

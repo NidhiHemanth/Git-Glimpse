@@ -20,13 +20,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "GITHUB_USER")
+@IdClass(GithubUserId.class)
 @NoArgsConstructor
 @AllArgsConstructor
 public class GithubUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Id
     @NotBlank(groups = OnCreate.class)
     @Column(name = "username")
     private String username;
