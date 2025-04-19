@@ -37,14 +37,17 @@ OAS3 documentation will also be available for the APIs.
 This module contains the UI implementation done using React JS.
 - It displays the data in a table with infinite scroll
 - You can apply filters on the columns
-  - username & full name
-  - followers & following
-  - checkbox for bio (if exists)
-- Add a new Github User to the database (if exists)
+  - username / full name
+  - followers / following
+  - checkbox for bio (filter records where bio exists)
+- Sort the records being displayed based on the columns
+  - username / full name
+  - followers / following
+- Add a new Github User to the database (if the username is valid & exists)
 - Upon clicking a user record (row)
     - A summary of all the user's Github projects are displayed (this is cached)
     - You are also given an option to delete the user's record from the database
-- Export the table content to an Excel sheet
+- Export the entire database content to an Excel sheet (not just the one displayed)
 
 ## Input Specification
 
