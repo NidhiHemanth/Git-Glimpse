@@ -32,6 +32,20 @@ This module contains APIs to perform various operations on the GitHub Users data
 The APIs are exposed on Swagger UI / can also be accessed over Postman.
 OAS3 documentation will also be available for the APIs.
 
+### 4) _app-frontend_
+
+This module contains the UI implementation done using React JS.
+- It displays the data in a table with infinite scroll
+- You can apply filters on the columns
+  - username & full name
+  - followers & following
+  - checkbox for bio (if exists)
+- Add a new Github User to the database (if exists)
+- Upon clicking a user record (row)
+    - A summary of all the user's Github projects are displayed (this is cached)
+    - You are also given an option to delete the user's record from the database
+- Export the table content to an Excel sheet
+
 ## Input Specification
 
 Add the path to your JSON files to the field `ref.inputDir` in `application-local.yml` file of data-ingest module. 
@@ -39,4 +53,4 @@ Then set the `spring.profiles.active=local` while running your Batch application
 
 ## TODO
 
-- [ ] API module: DTO & mappers
+- [ ] TBD
