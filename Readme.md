@@ -27,7 +27,7 @@ An alternative to this method would be to use a library like `jsonschema2pojo` t
 This module contains APIs to perform various operations on the GitHub Users data.
 - It allows filtering of data on selected fields
 - It allows sorting of the resultant data
-- The API supports infinite scroll feature of ag-grid
+- The API supports infinite scroll feature, using Cursor based Pagination
 
 The APIs are exposed on Swagger UI / can also be accessed over Postman.
 OAS3 documentation will also be available for the APIs.

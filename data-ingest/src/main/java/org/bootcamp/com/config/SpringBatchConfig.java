@@ -11,6 +11,7 @@ import org.bootcamp.com.exception.JobExecutionFailedException;
 import org.bootcamp.com.model.GithubUser;
 import org.bootcamp.com.model.Manifest;
 import org.bootcamp.com.repository.GithubRepository;
+import org.bootcamp.com.service.GithubService;
 import org.bootcamp.com.util.GithubItemMapper;
 import org.bootcamp.com.util.ManifestUtil;
 import org.springframework.batch.core.*;
@@ -21,8 +22,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ExecutionContext;
-import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
 import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
@@ -56,6 +56,8 @@ public class SpringBatchConfig {
     @Autowired
     private GithubRepository githubRepository;
     @Autowired
+    private GithubService githubService;
+    @Autowired
     private JobRepository jobRepository;
     @Autowired
     private PlatformTransactionManager transactionManager;
@@ -86,13 +88,18 @@ public class SpringBatchConfig {
                 .build();
     }
 
+//    @Bean
+//    public RepositoryItemWriter<GithubUser> writer() {
+//        return new RepositoryItemWriterBuilder<GithubUser>()
+//                .repository(githubRepository)
+//                .methodName("save")
+//                .build();
+//    }
+
     @Bean
-    public RepositoryItemWriter<GithubUser> writer() {
+    public ItemWriter<GithubUser> writer() {
         log.info("INSIDE writer");
-        return new RepositoryItemWriterBuilder<GithubUser>()
-                .repository(githubRepository)                       // Can be Service too
-                .methodName("save")
-                .build();
+        return items -> items.forEach(githubService::saveUser);
     }
 
     @Bean

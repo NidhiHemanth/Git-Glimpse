@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface GithubRepository extends JpaRepository<GithubUser, String> {
+public interface GithubRepository extends JpaRepository<GithubUser, Long> {
 
 }
