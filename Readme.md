@@ -49,7 +49,13 @@ This module contains the UI implementation done using React JS.
     - You are also given an option to delete the user's record from the database
 - Export the entire database content to an Excel sheet (not just the one displayed)
 
-_NOTE:_ Sorting & Filtering are being done on the backend (not frontend) since 
+This table is being implemented using [AG-Grid](https://www.ag-grid.com/react-data-grid/deep-dive/) because of its features:
+1. Selective column filtering & sorting
+2. Custom column filtering & sorting logic
+3. In-built support for pagination & infinite scroll
+4. Supports large datasets
+
+_**NOTE**:_ Sorting & Filtering are being done on the backend (not frontend) since 
 we don't have all the data available because infinite scroll loads data in chunks.
 
 ## Input Specification
