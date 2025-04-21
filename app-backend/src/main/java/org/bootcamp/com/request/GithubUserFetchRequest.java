@@ -33,6 +33,7 @@ public class GithubUserFetchRequest implements InfiniteScrollRequest, FilterAndS
     @Builder.Default
     private Integer size = 0;
 
+    // A Column filter can either be a String filter / Numeric filter
     @Builder.Default
     private List<ColumnFilter> columnFilters = new ArrayList<>();
 
