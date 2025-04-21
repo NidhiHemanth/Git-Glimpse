@@ -1,0 +1,5 @@
+
+implType:
+  # if true, API will use hardcoded SQL queries & JDBC to fetch results
+  # else if false, API will use CriteriaBuilder & JPA for database operations
+  useSqlQueries: ${SQL_IMPLEMENTATION_TYPE}
