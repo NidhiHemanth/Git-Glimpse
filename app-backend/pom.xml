@@ -31,6 +31,27 @@
             <artifactId>data-model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <!-- Used to build web applications, especially RESTful APIs
+             Includes an embedded servlet container (like Tomcat)
+             Provides @RestController, @RequestMapping, JSON conversion with Jackson etc -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- Has tools to help you monitor and manage your application in a live environment
+             It has a bunch of built-in endpoints that provide insight into the internals of your app -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- Provides components for working directly with databases using JDBC using JdbcTemplate
+             Doesn't include JPA / Hibernate. Good for raw SQL or lightweight database access -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <!-- ORM-style data access using Spring Data JPA (Repositories) & Hibernate (as the default JPA provider)
+             Provides auto-generated CRUD methods -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -38,6 +59,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- This library auto-generates OpenAPI documentation (Swagger) for REST API endpoints
+             Gives you a Swagger UI to test them. Meant for SpringBoot 3.x -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
@@ -48,6 +76,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.8-jre</version>
         </dependency>
 
         <dependency>
@@ -64,6 +97,10 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
