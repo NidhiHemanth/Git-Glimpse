@@ -17,6 +17,16 @@ spring:
     password: nini69
     driver-class-name: org.mariadb.jdbc.Driver
 
+# Configuring Spring Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
 # Enabling Swagger Documentation
 springdoc:
   api-docs:
@@ -24,7 +34,7 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
 
-implType:
+impl-type:
   # if true, API will use hardcoded SQL queries & JDBC to fetch results
   # else if false, API will use CriteriaBuilder & JPA for database operations
   useSqlQueries: ${SQL_IMPLEMENTATION_TYPE}

@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Component
 @Validated
-@ConfigurationProperties(prefix = "implType")
+@ConfigurationProperties(prefix = "impl-type")
 @Getter
 @Setter
 public class ApplicationProperties {
