@@ -1,5 +1,7 @@
 # Bootcamp Application
 
+Bootcamp is a full-stack project which uses ReactJS for the frontend, SpringBoot in the backend and MariaDB SQL for the Database.
+
 ## Project Structure
 
 ### 1) _data-model_
@@ -29,8 +31,33 @@ This module contains APIs to perform various operations on the GitHub Users data
 - It allows sorting of the resultant data
 - The API supports infinite scroll feature, using Cursor based Pagination
 
+The application lets you choose the type of database connection using the `SQL_IMPLEMENTATION_TYPE` configuration in `application-local.yml`
+1. If enabled, then Spring JDBC (JDBC Templates) are used to connect to the database
+2. If disabled, then Spring Data JPA (Java Persistence API) will be used
+
+<details>
+<summary>Click to learn more about SpringBoot terminology</summary>
+
+- **JDBC** : Low-level API to connect and interact with relational databases (like MySQL, PostgreSQL etc).
+- **Spring** JDBC : Simplifies JDBC by handling connection management, exception translation, and boilerplate code.
+- **ORM** : A programming technique that maps database tables to Java objects. Goals is to avoid writing SQL & work with objects instead.
+- **JPA** : A standard/specification for ORM in Java (part of Jakarta EE). Not an implementation, but defines how ORM should work.
+- **Hibernate** : A popular ORM framework for Java. Hibernate implements JPA, so using JPA with Hibernate is very common.
+- **JPA Repository** - Abstracts all the common database operations.
+- **Entity Manager + Criteria API**
+  - EntityManager is JPA’s core interface for persistence.
+  - Criteria API builds queries like a tree structure using builders
+  - More flexible than repositories — great for complex/dynamic queries.
+
+Refer here for [Spring Data JPA](https://youtu.be/GkkcZXF-mD8),
+[JPA vs Entity Manager](https://medium.com/@mgm06bm/jparepository-and-entitymanager-in-spring-data-jpa-e12daad579a7).
+
+</details>
+
 The APIs are exposed on Swagger UI / can also be accessed over Postman.
 OAS3 documentation will also be available for the APIs.
+
+This Backend has a monolithic architecture (as opposed to a Microservices based architecture).
 
 ### 4) _app-frontend_
 
