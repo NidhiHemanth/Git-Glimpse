@@ -28,6 +28,7 @@ management:
       show-details: always
 
 # Enabling Swagger Documentation
+# http://localhost:8081/swagger-ui/index.html
 springdoc:
   api-docs:
     path: /api-docs

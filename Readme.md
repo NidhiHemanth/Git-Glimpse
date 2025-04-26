@@ -31,6 +31,8 @@ This module contains APIs to perform various operations on the GitHub Users data
 - It allows sorting of the resultant data
 - The API supports infinite scroll feature, using Cursor based Pagination
 
+Start the SpringBoot Application and access Swagger [here](http://localhost:8081/swagger-ui/index.html).
+
 The application lets you choose the type of database connection using the `SQL_IMPLEMENTATION_TYPE` configuration in `application-local.yml`
 1. If enabled, then Spring JDBC (JDBC Templates) are used to connect to the database
 2. If disabled, then Spring Data JPA (Java Persistence API) will be used
