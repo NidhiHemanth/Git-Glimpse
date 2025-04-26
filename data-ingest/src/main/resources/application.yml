@@ -3,10 +3,12 @@ spring:
   application:
     name: BatchProcessing
   jpa:
+    # Dialect is a class that tells Hibernate how to speak the SQL "language" of your database
+    # Hibernate uses dialect resolution (version >= 3.2) to automatically determine the target database and dialect to be used
     hibernate:
       # Standard Hibernate property values are - none, validate, update, create, create-drop
       ddl-auto: update
-    show-sql: true
+    show-sql: false
   datasource:
     hikari:
       # Hikari is a high-performance, lightweight connection pooling library
@@ -32,7 +34,7 @@ logging:
     org.bootcamp.com: DEBUG
     org.springframework: INFO
     org.hibernate: ERROR
-    org.hibernate.SQL: DEBUG
+    org.hibernate.SQL: ERROR
     org.hibernate.type: TRACE
 
 ref:
