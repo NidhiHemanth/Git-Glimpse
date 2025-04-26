@@ -12,7 +12,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
@@ -35,11 +34,6 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @Slf4j
 public class BatchProcessingApplication {
-    @Autowired
-    private JobLauncher jobLauncher;
-    @Autowired
-    private Job job;
-
     public static void main(String[] args) {
         // WebApplicationType.NONE is required otherwise SpringBoot starts web servers automatically
         // Default WebApplicationType is SERVLET
@@ -59,7 +53,7 @@ public class BatchProcessingApplication {
     }
 
     @Bean
-    public CommandLineRunner runBatchJob() {
+    public CommandLineRunner runBatchJob(JobLauncher jobLauncher, Job job) {
         return args -> {
             JobParameters jobParameters = new JobParametersBuilder()
                     .addString(Constants.MANIFEST, "manifest.json")
