@@ -9,11 +9,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 /*
  @Data - generates all the boilerplate code for a POJO
  @Builder - implements the Builder pattern
  @Entity - marks the class as a database table entity
  @Embedded - includes an @Embeddable class inside an @Entity
+
+ In modern applications, Entity classes don't have to be declared Serializable because
+    it is managed entirely by Spring Data JPA & Hibernate (JPA provider).
+ It is required to explicitly declare the classes Serializable in cases where data is being
+    sent between sessions / services / kafka brokers / for caching.
  */
 
 @Data
@@ -23,7 +30,7 @@ import lombok.NoArgsConstructor;
 @IdClass(GithubUserId.class)
 @NoArgsConstructor
 @AllArgsConstructor
-public class GithubUser {
+public class GithubUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)             // IDENTITY type will not work with composite keys
     private Long id;

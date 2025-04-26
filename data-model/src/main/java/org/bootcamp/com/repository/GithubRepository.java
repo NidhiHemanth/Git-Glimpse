@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  @Repository - used to declare the class as a DAO
                in context of Spring Data JPA, repositories handle communication b/w application & database
  JpaRepository - it is a Spring Data JPA that provides a set of CRUD operations
-               it is commonly used with relational databases
+               it lets you implement basic operations automatically
  */
 
 @Repository

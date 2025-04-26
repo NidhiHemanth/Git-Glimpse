@@ -11,14 +11,18 @@ import org.springframework.web.bind.annotation.RestController;
  @CrossOrigin - Enables Cross-Origin Resource Sharing (CORS).
                 Allows your API to be accessed from a different domain.
                 EG: frontend on localhost:3000 calling backend on localhost:8080)
+
+
+ In modern applications, Entity classes don't have to be declared Serializable because
+ Spring uses Jackson to convert your Java objects into JSON and back when dealing with Requests & Responses.
  */
 
 /*
  * 1. fetch users in chunks for pagination
- * 2. add new user after validating using github API
- * 3. filter & sort by column
- * 4. summarize user projects using openAI API
- * 5. delete a user record
+ * 2. filter & sort by column
+ * 3. delete a user record
+ * 4. add new user after validating using github API
+ * 5. summarize user projects using openAI API
  */
 
 @RestController
