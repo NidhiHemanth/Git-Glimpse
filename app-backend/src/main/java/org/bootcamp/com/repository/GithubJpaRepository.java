@@ -1,7 +1,9 @@
 package org.bootcamp.com.repository;
 
-import org.springframework.stereotype.Repository;
+/*
+ Spring only creates beans from concrete classes, not interfaces.
+ Hence, GithubJpaRepository cannot be annotated with @Repository.
+ */
 
-@Repository
-public class GithubJpaRepository {
+public interface GithubJpaRepository {
 }

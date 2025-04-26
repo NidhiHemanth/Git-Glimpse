@@ -1,4 +1,4 @@
 package org.bootcamp.com.service;
 
-public class GithubUserService {
+public interface GithubUserService {
 }

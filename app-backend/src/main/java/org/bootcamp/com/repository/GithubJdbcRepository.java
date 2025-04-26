@@ -1,4 +1,4 @@
 package org.bootcamp.com.repository;
 
-public class GithubJdbcRepository {
+public interface GithubJdbcRepository {
 }
