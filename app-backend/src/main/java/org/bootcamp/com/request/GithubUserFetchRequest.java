@@ -1,9 +1,11 @@
 package org.bootcamp.com.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bootcamp.com.constants.Constants;
 import org.bootcamp.com.request.filter.ColumnFilter;
 import org.bootcamp.com.request.sort.SortColumn;
 
@@ -39,4 +41,7 @@ public class GithubUserFetchRequest implements InfiniteScrollRequest, FilterAndS
 
     @Builder.Default
     private List<SortColumn> sortColumns = new ArrayList<>();
+
+    @JsonIgnore
+    private String tableName = Constants.TABLE_NAME;
 }
