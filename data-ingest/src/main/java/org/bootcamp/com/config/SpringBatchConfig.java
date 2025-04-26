@@ -255,7 +255,7 @@ public class SpringBatchConfig {
             final String calculatedCheckSum = ManifestUtil.calculateCheckSum(Paths.get(applicationProperties.getInputDir(), jobParameters.getString(Constants.DATA_FILE)));
 
             if(!calculatedCheckSum.equals(manifest.getChecksum())) {
-                throw new InvalidJobParametersException("Calculated Checksum of the Data does not match given checksum");
+                throw new InvalidJobParametersException("Calculated Checksum " + calculatedCheckSum + " does not match given checksum ");
             }
         };
     }
