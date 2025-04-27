@@ -1,6 +1,8 @@
 package org.bootcamp.com.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.bootcamp.com.dto.GithubUserDto;
@@ -39,11 +41,15 @@ public class GithubUserController {
 
     @Operation(summary = "Get User by their Username")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User Found and fetched"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User Found and fetched",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GithubUserDto.class))
+            ),
             @ApiResponse(responseCode = "404", description = "User Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("users/{username}")
+    @GetMapping("/users/{username}")
     public ResponseEntity<GithubUserDto> findUserByUsername(@PathVariable String username) {
         return githubUserService.findByUsername(username)
                 .map(ResponseEntity::ok)                                            // user -> ResponseEntity.ok(user)
