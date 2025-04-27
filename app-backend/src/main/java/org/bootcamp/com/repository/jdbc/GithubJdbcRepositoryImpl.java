@@ -1,5 +1,6 @@
 package org.bootcamp.com.repository.jdbc;
 
+import org.bootcamp.com.constants.Constants;
 import org.bootcamp.com.model.GithubUser;
 import org.bootcamp.com.repository.GithubJdbcRepository;
 import org.bootcamp.com.request.GithubUserFetchRequest;
@@ -52,7 +53,15 @@ public class GithubJdbcRepositoryImpl implements GithubJdbcRepository {
     }
 
     @Override
-    public GithubUser addUser(String username) {
-        return null;
+    public int addUser(GithubUser githubUser) {
+        // SimplePropertySqlParameterSource could have been used if GithubUser did not have nested fields
+        return jdbcTemplate.update(
+                "INSERT INTO github_user (" + addDelimiterToColumns(", ") + ") VALUES (:" + addDelimiterToColumns(", :") + ");",
+                new MapSqlParameterSource(GithubUserMapper.INSTANCE.toParameterSource(githubUser))
+        );
+    }
+
+    private String addDelimiterToColumns(String delimiter) {
+        return String.join(delimiter, Constants.TABLE_COLUMNS);
     }
 }

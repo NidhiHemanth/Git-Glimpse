@@ -1,6 +1,7 @@
 package org.bootcamp.com.utils;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bootcamp.com.constants.Constants;
 import org.bootcamp.com.dto.GithubUserDto;
 import org.bootcamp.com.exception.RowMappingException;
 import org.bootcamp.com.model.GithubProject;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 /*
  Singleton-style utility mapper
@@ -65,22 +69,45 @@ public class GithubUserMapper {
         final GithubUser githubUser = new GithubUser();
 
         try {
-            githubUser.setId(rs.getLong("id"));
-            githubUser.setUsername(rs.getString("username"));
-            githubUser.setFullName(rs.getString("full_name"));
-            githubUser.setAvatarUrl(rs.getString("avatar_url"));
-            githubUser.setProfileUrl(rs.getString("profile_url"));
-            githubUser.setFollowers(rs.getInt("followers"));
-            githubUser.setFollowing(rs.getInt("following"));
-            githubUser.setBio(rs.getString("bio"));
+            githubUser.setId(rs.getLong(Constants.ID));
+            githubUser.setUsername(rs.getString(Constants.USERNAME));
+            githubUser.setFullName(rs.getString(Constants.FULL_NAME));
+            githubUser.setAvatarUrl(rs.getString(Constants.AVATAR_URL));
+            githubUser.setProfileUrl(rs.getString(Constants.PROFILE_URL));
+            githubUser.setFollowers(rs.getInt(Constants.FOLLOWERS));
+            githubUser.setFollowing(rs.getInt(Constants.FOLLOWING));
+            githubUser.setBio(rs.getString(Constants.BIO));
             githubUser.setMostStarredProject(new GithubProject());
-            githubUser.getMostStarredProject().setProjectName(rs.getString("project_name"));
-            githubUser.getMostStarredProject().setHtmlUrl(rs.getString("project_url"));
+            githubUser.getMostStarredProject().setProjectName(rs.getString(Constants.PROJECT_NAME));
+            githubUser.getMostStarredProject().setHtmlUrl(rs.getString(Constants.PROJECT_URL));
         } catch (SQLException e) {
             log.error("ROW MAPPING EXCEPTION while processing {}", username);
             throw new RowMappingException(e);
         }
 
         return githubUser;
+    }
+
+    public Map<String, ?> toParameterSource(GithubUser githubUser) {
+        final GithubProject project = Optional.ofNullable(githubUser.getMostStarredProject()).orElse(new GithubProject());
+
+        // Map.of() can only be used to insert up-to 10 items
+        final Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put(Constants.USERNAME, githubUser.getUsername());
+        paramsMap.put(Constants.FULL_NAME, githubUser.getFullName());
+        paramsMap.put(Constants.AVATAR_URL, githubUser.getAvatarUrl());
+        paramsMap.put(Constants.BIO, githubUser.getBio());
+        paramsMap.put(Constants.EMAIL, githubUser.getEmail());
+        paramsMap.put(Constants.FOLLOWERS, githubUser.getFollowers());
+        paramsMap.put(Constants.FOLLOWING, githubUser.getFollowing());
+        paramsMap.put(Constants.PROJECT_NAME, project.getProjectName());
+        paramsMap.put(Constants.PROJECT_DESCRIPTION, project.getDescription());
+        paramsMap.put(Constants.PROJECT_LANGUAGE, project.getLanguage());
+        paramsMap.put(Constants.PROJECT_STARGAZERS, project.getStargazersCount());
+        paramsMap.put(Constants.PROJECT_FORKS, project.getForksCount());
+        paramsMap.put(Constants.PROJECT_URL, project.getHtmlUrl());
+        paramsMap.put(Constants.PROFILE_URL, githubUser.getProfileUrl());
+
+        return paramsMap;
     }
 }

@@ -32,7 +32,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class GithubUser implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)             // IDENTITY type will not work with composite keys
+    @GeneratedValue(strategy = GenerationType.IDENTITY)             // IDENTITY type will not work with composite keys
     private Long id;
 
     @Id

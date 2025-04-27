@@ -10,4 +10,5 @@ public interface GithubUserService {
     Optional<GithubUserDto> findByUsername(String username);
     int deleteByUsername(String username);
     GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest);
+    int addUser(String username);
 }

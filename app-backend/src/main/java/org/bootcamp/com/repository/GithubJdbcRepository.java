@@ -8,6 +8,6 @@ public interface GithubJdbcRepository {
     GithubUser findByUsername(String username);
     GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest);
     int deleteByUsername(String username);
-    GithubUser addUser(String username);
+    int addUser(GithubUser githubUser);
     // API to summarize user projects using openAI API
 }

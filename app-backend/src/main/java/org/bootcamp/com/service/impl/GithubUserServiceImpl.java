@@ -79,7 +79,19 @@ public class GithubUserServiceImpl implements GithubUserService {
 
     @Override
     public GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest) {
+        log.info("\t => PROCESSING fetchUsers using JDBC Template");
         log.debug("SQL query executed : \n{}", sqlQueryBuilder.buildSqlQuery(fetchRequest));
         return githubJdbcRepository.fetchUsers(fetchRequest);
+    }
+
+    @Override
+    public int addUser(String username) {
+        // Checking if username is valid & user exists
+        GithubUser githubUser = githubJdbcRepository.findByUsername("sn99");
+        githubUser.setId(null);
+        githubUser.setUsername("sn69");
+
+        log.info("\t => PROCESSING addUser using JDBC Template");
+        return githubJdbcRepository.addUser(githubUser);
     }
 }

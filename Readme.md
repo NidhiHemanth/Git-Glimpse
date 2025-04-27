@@ -2,6 +2,12 @@
 
 Bootcamp is a full-stack project which uses ReactJS for the frontend, SpringBoot in the backend and MariaDB SQL for the Database.
 
+## How to start the Application
+
+### 1. Start the Backend SpringBoot application
+
+### 2. Start the Frontend React application
+
 ## Project Structure
 
 ### 1) _data-model_
@@ -14,6 +20,9 @@ This module contains the batch processing code to :
 1. Read data from bulk JSON files
 2. Process and validate the data in those files
 3. Persist the data into an MariaDB (SQL) database
+
+Add the path to your JSON files to the field `ref.inputDir` in `application-local.yml` file of data-ingest module.
+Then set the `spring.profiles.active=local` in your environment variables while running your Batch application.
 
 Make sure you have MariaDB set up, with a database called `github`.
 Execute the following command to change the character set of the Database to support all Unicode characters (in case your data has emojis or special symbols).
@@ -90,11 +99,6 @@ This table is being implemented using [AG-Grid](https://www.ag-grid.com/react-da
 
 _**NOTE**:_ Sorting & Filtering are being done on the backend (not frontend) since 
 we don't have all the data available because infinite scroll loads data in chunks.
-
-## Input Specification
-
-Add the path to your JSON files to the field `ref.inputDir` in `application-local.yml` file of data-ingest module. 
-Then set the `spring.profiles.active=local` while running your Batch application.
 
 ## TODO
 

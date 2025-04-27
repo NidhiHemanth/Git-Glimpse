@@ -83,4 +83,15 @@ public class GithubUserController {
     public ResponseEntity<GithubUserFetchResponse> fetchUsers(@RequestBody GithubUserFetchRequest fetchRequest) {
         return new ResponseEntity<>(githubUserService.fetchUsers(fetchRequest), HttpStatus.OK);
     }
+
+    @Operation(summary = "Add User into Database using their Username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User Added"),
+            @ApiResponse(responseCode = "404", description = "Invalid Username"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    @GetMapping("/user/add/{username}")
+    public ResponseEntity<Void> addUser(@PathVariable String username) {
+        return new ResponseEntity<>(githubUserService.addUser(username) > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
 }

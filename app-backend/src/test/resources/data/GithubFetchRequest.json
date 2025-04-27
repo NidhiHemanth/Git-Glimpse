@@ -4,6 +4,12 @@
   "columnFilters": [
     {
       "columnFilterType": "stringColumnFilter",
+      "column": "username",
+      "value": "nidhihemanth",
+      "operator": "equal"
+    },
+    {
+      "columnFilterType": "stringColumnFilter",
       "column": "full_name",
       "value": "th",
       "operator": "contains"
