@@ -7,7 +7,7 @@ import org.bootcamp.com.response.GithubUserFetchResponse;
 public interface GithubJdbcRepository {
     GithubUser findByUsername(String username);
     GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest);
-    GithubUser deleteByUsername(String username);
+    int deleteByUsername(String username);
     GithubUser addUser(String username);
     // API to summarize user projects using openAI API
 }

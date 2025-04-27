@@ -36,11 +36,10 @@ public class GithubJdbcRepositoryImpl implements GithubJdbcRepository {
     }
 
     @Override
-    public GithubUser deleteByUsername(String username) {
-        return jdbcTemplate.queryForObject(
+    public int deleteByUsername(String username) {
+        return jdbcTemplate.update(
                 "DELETE FROM github_user WHERE username = :username",
-                new MapSqlParameterSource("username", username),
-                (ResultSet rs, int rowNum) -> GithubUserMapper.INSTANCE.fromResultSet(rs, username)
+                new MapSqlParameterSource("username", username)
         );
     }
 

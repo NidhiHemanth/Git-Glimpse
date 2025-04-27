@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.bootcamp.com.dto.GithubUserDto;
 import org.bootcamp.com.service.GithubUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,8 +47,8 @@ public class GithubUserController {
                     description = "User Found and fetched",
                     content = @Content(mediaType = "application/json", schema = @Schema(implementation = GithubUserDto.class))
             ),
-            @ApiResponse(responseCode = "404", description = "User Not Found"),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+            @ApiResponse(responseCode = "404", description = "User Not Found", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
     })
     @GetMapping("/user/{username}")
     public ResponseEntity<GithubUserDto> findUserByUsername(@PathVariable String username) {
@@ -58,18 +59,12 @@ public class GithubUserController {
 
     @Operation(summary = "Delete a User by their Username")
     @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "User Deleted successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GithubUserDto.class))
-            ),
+            @ApiResponse(responseCode = "200", description = "User Deleted successfully"),
             @ApiResponse(responseCode = "404", description = "User Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @GetMapping("/delete/{username}")
-    public ResponseEntity<GithubUserDto> deleteUserByUsername(@PathVariable String username) {
-        return githubUserService.deleteByUsername(username)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Void> deleteUserByUsername(@PathVariable String username) {
+        return new ResponseEntity<>(githubUserService.deleteByUsername(username) > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }

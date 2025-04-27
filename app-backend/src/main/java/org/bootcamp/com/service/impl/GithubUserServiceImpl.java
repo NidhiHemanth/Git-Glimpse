@@ -50,24 +50,23 @@ public class GithubUserServiceImpl implements GithubUserService {
     }
 
     @Override
-    public Optional<GithubUserDto> deleteByUsername(String username) {
-        GithubUser githubUser = null;
+    public int deleteByUsername(String username) {
+        int rowsAffected = 0;
 
         if(applicationProperties.isUseSqlQueries()) {
             log.info("\t => PROCESSING deleteByUsername using JDBC Template");
-            try {
-                githubUser = githubJdbcRepository.findByUsername(username);
-                githubJdbcRepository.deleteByUsername(username);
-            } catch (DataAccessException e) {
-                log.debug("\t\t User not found for {} in deleteByUsername", username);
-            }
+            rowsAffected = githubJdbcRepository.deleteByUsername(username);
         } else {
             log.info("\t => PROCESSING deleteByUsername using JPA Repository");
-            githubUser = githubJpaRepository.findByUsername(username);
-            githubJpaRepository.deleteByUsername(username);
+            rowsAffected = githubJpaRepository.deleteByUsername(username);
         }
 
-        return Optional.ofNullable(githubUser)
-                .map(GithubUserMapper.INSTANCE::toDto);
+        if(rowsAffected > 0) {
+            log.info("\t\t User {} deleted successfully!", username);
+        } else {
+            log.debug("\t\t User not found for {} in deleteByUsername", username);
+        }
+
+        return rowsAffected;
     }
 }

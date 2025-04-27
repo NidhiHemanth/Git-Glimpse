@@ -13,5 +13,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GithubJpaRepository extends JpaRepository<GithubUser, GithubUserId> {
     GithubUser findByUsername(String username);
-    GithubUser deleteByUsername(String username);
+    int deleteByUsername(String username);
 }
