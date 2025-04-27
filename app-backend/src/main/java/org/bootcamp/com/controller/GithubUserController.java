@@ -49,10 +49,27 @@ public class GithubUserController {
             @ApiResponse(responseCode = "404", description = "User Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/users/{username}")
+    @GetMapping("/user/{username}")
     public ResponseEntity<GithubUserDto> findUserByUsername(@PathVariable String username) {
         return githubUserService.findByUsername(username)
                 .map(ResponseEntity::ok)                                            // user -> ResponseEntity.ok(user)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Delete a User by their Username")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User Deleted successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GithubUserDto.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "User Not Found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    @GetMapping("/delete/{username}")
+    public ResponseEntity<GithubUserDto> deleteUserByUsername(@PathVariable String username) {
+        return githubUserService.deleteByUsername(username)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 }

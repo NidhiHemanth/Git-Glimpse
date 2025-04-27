@@ -34,15 +34,37 @@ public class GithubUserServiceImpl implements GithubUserService {
         GithubUser githubUser = null;
 
         if(applicationProperties.isUseSqlQueries()) {
-            log.info("\t => PROCESSING using JDBC Template");
+            log.info("\t => PROCESSING findByUsername using JDBC Template");
             try {
                 githubUser = githubJdbcRepository.findByUsername(username);
             } catch (DataAccessException e) {
-                log.debug("\t\t User not found for {}", username);
+                log.debug("\t\t User not found for {} in findByUsername", username);
             }
         } else {
-            log.info("\t => PROCESSING using JPA Repository");
+            log.info("\t => PROCESSING findByUsername using JPA Repository");
             githubUser = githubJpaRepository.findByUsername(username);
+        }
+
+        return Optional.ofNullable(githubUser)
+                .map(GithubUserMapper.INSTANCE::toDto);
+    }
+
+    @Override
+    public Optional<GithubUserDto> deleteByUsername(String username) {
+        GithubUser githubUser = null;
+
+        if(applicationProperties.isUseSqlQueries()) {
+            log.info("\t => PROCESSING deleteByUsername using JDBC Template");
+            try {
+                githubUser = githubJdbcRepository.findByUsername(username);
+                githubJdbcRepository.deleteByUsername(username);
+            } catch (DataAccessException e) {
+                log.debug("\t\t User not found for {} in deleteByUsername", username);
+            }
+        } else {
+            log.info("\t => PROCESSING deleteByUsername using JPA Repository");
+            githubUser = githubJpaRepository.findByUsername(username);
+            githubJpaRepository.deleteByUsername(username);
         }
 
         return Optional.ofNullable(githubUser)
