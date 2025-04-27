@@ -28,6 +28,7 @@ public class GithubUserMapper {
         }
 
         final GithubUser githubUser = new GithubUser();
+        githubUser.setId(githubUserDto.getId());
         githubUser.setUsername(githubUserDto.getUsername());
         githubUser.setFullName(githubUserDto.getFullName());
         githubUser.setAvatarUrl(githubUserDto.getAvatarUrl());
@@ -47,6 +48,7 @@ public class GithubUserMapper {
         }
 
         final GithubUserDto githubUserDto = new GithubUserDto();
+        githubUserDto.setId(githubUser.getId());
         githubUserDto.setUsername(githubUser.getUsername());
         githubUserDto.setFullName(githubUser.getFullName());
         githubUserDto.setFollowers(githubUser.getFollowers());
@@ -63,6 +65,7 @@ public class GithubUserMapper {
         final GithubUser githubUser = new GithubUser();
 
         try {
+            githubUser.setId(rs.getLong("id"));
             githubUser.setUsername(rs.getString("username"));
             githubUser.setFullName(rs.getString("full_name"));
             githubUser.setAvatarUrl(rs.getString("avatar_url"));

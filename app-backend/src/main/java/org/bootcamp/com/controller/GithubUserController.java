@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.bootcamp.com.dto.GithubUserDto;
+import org.bootcamp.com.request.GithubUserFetchRequest;
+import org.bootcamp.com.response.GithubUserFetchResponse;
 import org.bootcamp.com.service.GithubUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -66,5 +68,19 @@ public class GithubUserController {
     @GetMapping("/delete/{username}")
     public ResponseEntity<Void> deleteUserByUsername(@PathVariable String username) {
         return new ResponseEntity<>(githubUserService.deleteByUsername(username) > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(summary = "Fetch Filtered & Sorted Users for cursor pagination")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User fetched successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = GithubUserFetchResponse.class))
+            ),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content)
+    })
+    @PostMapping("/fetch")
+    public ResponseEntity<GithubUserFetchResponse> fetchUsers(@RequestBody GithubUserFetchRequest fetchRequest) {
+        return new ResponseEntity<>(githubUserService.fetchUsers(fetchRequest), HttpStatus.OK);
     }
 }

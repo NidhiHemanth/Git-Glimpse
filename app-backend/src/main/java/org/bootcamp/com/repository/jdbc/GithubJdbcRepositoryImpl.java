@@ -11,14 +11,17 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
+import java.util.List;
 
 @Repository
 public class GithubJdbcRepositoryImpl implements GithubJdbcRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final SqlQueryBuilder sqlQueryBuilder;
 
     @Autowired
-    public GithubJdbcRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+    public GithubJdbcRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, SqlQueryBuilder sqlQueryBuilder) {
         this.jdbcTemplate = jdbcTemplate;
+        this.sqlQueryBuilder = sqlQueryBuilder;
     }
 
     @Override
@@ -32,7 +35,12 @@ public class GithubJdbcRepositoryImpl implements GithubJdbcRepository {
 
     @Override
     public GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest) {
-        return null;
+        final List<GithubUser> users = jdbcTemplate.query(
+                sqlQueryBuilder.buildSqlQuery(fetchRequest),
+                (ResultSet rs, int rowNum) -> GithubUserMapper.INSTANCE.fromResultSet(rs, "fetchUsers")
+        );
+        final Long lastId = users.isEmpty() ? 0L : users.getLast().getId();
+        return new GithubUserFetchResponse(users.stream().map(GithubUserMapper.INSTANCE::toDto).toList(), lastId);
     }
 
     @Override

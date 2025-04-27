@@ -1,4 +1,56 @@
 package org.bootcamp.com.repository.jdbc;
 
+import org.bootcamp.com.request.GithubUserFetchRequest;
+import org.bootcamp.com.request.filter.ColumnFilter;
+import org.bootcamp.com.request.filter.NumericColumnFilter;
+import org.bootcamp.com.request.filter.StringColumnFilter;
+import org.bootcamp.com.request.sort.SortColumn;
+import org.bootcamp.com.utils.NumericSqlBuilderUtil;
+import org.bootcamp.com.utils.StringSqlBuilderUtil;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component
 public class SqlQueryBuilder {
+    public String buildSqlQuery(GithubUserFetchRequest fetchRequest) {
+        return selectQuery(fetchRequest.getTableName()) +
+                filterQuery(fetchRequest.getColumnFilters(), fetchRequest.getLastId()) +
+                sortQuery(fetchRequest.getSortColumns()) +
+                limitQuery(fetchRequest.getSize());
+    }
+
+    private String selectQuery(String tableName) {
+        return "SELECT * FROM " + tableName + "\n";
+    }
+
+    private String filterQuery(List<ColumnFilter> columnFilters, Long lastId) {
+        final String whereStatement = columnFilters.stream()
+                .map((columnFilter -> {
+                    if(columnFilter instanceof StringColumnFilter) {
+                        return StringSqlBuilderUtil.INSTANCE.buildSql((StringColumnFilter) columnFilter);
+                    } else if (columnFilter instanceof NumericColumnFilter) {
+                        return NumericSqlBuilderUtil.INSTANCE.buildSql((NumericColumnFilter) columnFilter);
+                    }
+                    return "";
+                }))
+                .collect(Collectors.joining(" AND "));
+        return whereStatement.isEmpty() ? "" : "WHERE " + whereStatement + "\n";
+    }
+
+    private String sortQuery(List<SortColumn> sortColumns) {
+        // adding default ordering by ID
+        sortColumns.addFirst(new SortColumn("id", SortColumn.Direction.DESCENDING));
+
+        final String sortColumnList = sortColumns.stream()
+                                        .map(sortColumn -> sortColumn.getColumn() + " " + sortColumn.getSortDirection().getSqlValue())
+                                        .collect(Collectors.joining(", "));
+
+        return "ORDER BY " + sortColumnList + "\n";
+    }
+
+    private String limitQuery(Integer size) {
+        return "LIMIT " + size + ";";
+    }
 }

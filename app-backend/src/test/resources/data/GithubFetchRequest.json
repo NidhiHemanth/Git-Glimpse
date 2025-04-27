@@ -1,0 +1,31 @@
+{
+  "lastId": 0,
+  "size": 10,
+  "columnFilters": [
+    {
+      "columnFilterType": "stringColumnFilter",
+      "column": "full_name",
+      "value": "th",
+      "operator": "contains"
+    },
+    {
+      "columnFilterType": "numericColumnFilter",
+      "column": "following",
+      "value": 1,
+      "toValue": 50,
+      "operator": "toValue"
+    },
+    {
+      "columnFilterType": "numericColumnFilter",
+      "column": "followers",
+      "value": 500,
+      "operator": "greaterThan"
+    }
+  ],
+  "sortColumns": [
+    {
+      "column": "followers",
+      "sortDirection": "descending"
+    }
+  ]
+}

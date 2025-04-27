@@ -6,6 +6,9 @@ import org.bootcamp.com.dto.GithubUserDto;
 import org.bootcamp.com.model.GithubUser;
 import org.bootcamp.com.repository.GithubJdbcRepository;
 import org.bootcamp.com.repository.GithubJpaRepository;
+import org.bootcamp.com.repository.jdbc.SqlQueryBuilder;
+import org.bootcamp.com.request.GithubUserFetchRequest;
+import org.bootcamp.com.response.GithubUserFetchResponse;
 import org.bootcamp.com.service.GithubUserService;
 import org.bootcamp.com.utils.GithubUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +22,18 @@ import java.util.Optional;
 public class GithubUserServiceImpl implements GithubUserService {
     private final GithubJpaRepository githubJpaRepository;
     private final GithubJdbcRepository githubJdbcRepository;
+    private final SqlQueryBuilder sqlQueryBuilder;
 
     @Autowired
     private ApplicationProperties applicationProperties;
 
     @Autowired
-    public GithubUserServiceImpl(GithubJpaRepository githubJpaRepository, GithubJdbcRepository githubJdbcRepository) {
+    public GithubUserServiceImpl(GithubJpaRepository githubJpaRepository,
+                                 GithubJdbcRepository githubJdbcRepository,
+                                 SqlQueryBuilder sqlQueryBuilder) {
         this.githubJpaRepository = githubJpaRepository;
         this.githubJdbcRepository = githubJdbcRepository;
+        this.sqlQueryBuilder = sqlQueryBuilder;
     }
 
     @Override
@@ -68,5 +75,11 @@ public class GithubUserServiceImpl implements GithubUserService {
         }
 
         return rowsAffected;
+    }
+
+    @Override
+    public GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest) {
+        log.debug("SQL query executed : \n{}", sqlQueryBuilder.buildSqlQuery(fetchRequest));
+        return githubJdbcRepository.fetchUsers(fetchRequest);
     }
 }
