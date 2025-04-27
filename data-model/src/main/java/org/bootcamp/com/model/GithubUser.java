@@ -21,23 +21,25 @@ import java.io.Serializable;
     it is managed entirely by Spring Data JPA & Hibernate (JPA provider).
  It is required to explicitly declare the classes Serializable in cases where data is being
     sent between sessions / services / kafka brokers / for caching.
+
+ NOTE: Spring JPA does not support GenerationType.IDENTITY with composite keys.
+       Although, JDBC & JDBC Template does support it.
+       To avoid any complications, username is declared as UNIQUE instead of making it a composite key.
  */
 
 @Data
 @Builder
 @Entity
 @Table(name = "GITHUB_USER")
-@IdClass(GithubUserId.class)
 @NoArgsConstructor
 @AllArgsConstructor
 public class GithubUser implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)             // IDENTITY type will not work with composite keys
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Id
     @NotBlank(groups = OnCreate.class)
-    @Column(name = "username")
+    @Column(name = "username", unique = true)
     private String username;
 
     @Version

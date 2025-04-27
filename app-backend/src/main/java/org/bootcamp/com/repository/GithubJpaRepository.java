@@ -6,12 +6,11 @@ package org.bootcamp.com.repository;
  */
 
 import org.bootcamp.com.model.GithubUser;
-import org.bootcamp.com.model.GithubUserId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface GithubJpaRepository extends JpaRepository<GithubUser, GithubUserId> {
+public interface GithubJpaRepository extends JpaRepository<GithubUser, Long> {
     GithubUser findByUsername(String username);
     int deleteByUsername(String username);
 }
