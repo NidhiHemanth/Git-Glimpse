@@ -17,5 +17,5 @@ import org.springframework.validation.annotation.Validated;
 @Getter
 @Setter
 public class ApplicationProperties {
-    private String useSqlQueries;
+    private boolean useSqlQueries;
 }
