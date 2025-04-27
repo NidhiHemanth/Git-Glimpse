@@ -17,6 +17,10 @@ public class GithubUserMapper {
     private GithubUserMapper() {}
 
     public GithubUser toEntity(GithubUserDto githubUserDto) {
+        if(null == githubUserDto) {
+            return null;
+        }
+
         final GithubUser githubUser = new GithubUser();
         githubUser.setUsername(githubUserDto.getUsername());
         githubUser.setFullName(githubUserDto.getFullName());
@@ -32,6 +36,10 @@ public class GithubUserMapper {
     }
 
     public GithubUserDto toDto(GithubUser githubUser) {
+        if(null == githubUser) {
+            return null;
+        }
+
         final GithubUserDto githubUserDto = new GithubUserDto();
         githubUserDto.setUsername(githubUser.getUsername());
         githubUserDto.setFullName(githubUser.getFullName());

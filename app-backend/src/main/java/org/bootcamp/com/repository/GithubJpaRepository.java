@@ -5,5 +5,12 @@ package org.bootcamp.com.repository;
  Hence, GithubJpaRepository cannot be annotated with @Repository.
  */
 
-public interface GithubJpaRepository {
+import org.bootcamp.com.model.GithubUser;
+import org.bootcamp.com.model.GithubUserId;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface GithubJpaRepository extends JpaRepository<GithubUser, GithubUserId> {
+    GithubUser findByUsername(String username);
 }

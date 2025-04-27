@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 /*
  @Component - used to mark a class as a Spring-managed bean
               an instance is managed by the Spring container as part of the dependency injection (DI) mechanism
+              @Service should be used instead, according to stereotype
  @Autowired - used for dependency injection (design pattern)
  @Transactional - run within a transactional context
               used with CRUD operations for maintaining atomicity

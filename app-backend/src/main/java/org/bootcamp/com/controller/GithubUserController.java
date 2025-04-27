@@ -1,8 +1,13 @@
 package org.bootcamp.com.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.bootcamp.com.dto.GithubUserDto;
+import org.bootcamp.com.service.GithubUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /*
  @RestController - Automatically serializes return values (Java objects) to JSON / XML.
@@ -29,4 +34,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/github")
 @CrossOrigin
 public class GithubUserController {
+    @Autowired
+    GithubUserService githubUserService;
+
+    @Operation(summary = "Get User by their Username")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User Found and fetched"),
+            @ApiResponse(responseCode = "404", description = "User Not Found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    @GetMapping("users/{username}")
+    public ResponseEntity<GithubUserDto> findUserByUsername(@PathVariable String username) {
+        return githubUserService.findByUsername(username)
+                .map(ResponseEntity::ok)                                            // user -> ResponseEntity.ok(user)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
