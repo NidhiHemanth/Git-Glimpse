@@ -2,6 +2,9 @@ package org.bootcamp.com.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bootcamp.com.config.ApplicationProperties;
+import org.bootcamp.com.constants.Constants;
+import org.bootcamp.com.dto.GithubApiRepoDto;
+import org.bootcamp.com.dto.GithubApiUserDto;
 import org.bootcamp.com.dto.GithubUserDto;
 import org.bootcamp.com.model.GithubUser;
 import org.bootcamp.com.repository.GithubJdbcRepository;
@@ -12,11 +15,17 @@ import org.bootcamp.com.response.GithubUserFetchResponse;
 import org.bootcamp.com.service.GithubUserService;
 import org.bootcamp.com.utils.GithubUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,11 +43,11 @@ public class GithubUserServiceImpl implements GithubUserService {
     public GithubUserServiceImpl(GithubJpaRepository githubJpaRepository,
                                  GithubJdbcRepository githubJdbcRepository,
                                  SqlQueryBuilder sqlQueryBuilder,
-                                 RestTemplate restTemplate) {
+                                 RestTemplateBuilder builder) {
         this.githubJpaRepository = githubJpaRepository;
         this.githubJdbcRepository = githubJdbcRepository;
         this.sqlQueryBuilder = sqlQueryBuilder;
-        this.restTemplate = restTemplate;
+        this.restTemplate = builder.build();
     }
 
     @Override
@@ -63,7 +72,7 @@ public class GithubUserServiceImpl implements GithubUserService {
 
     @Override
     public int deleteByUsername(String username) {
-        int rowsAffected = 0;
+        final int rowsAffected;
 
         if(applicationProperties.isUseSqlQueries()) {
             log.info("\t => PROCESSING deleteByUsername using JDBC Template");
@@ -94,12 +103,14 @@ public class GithubUserServiceImpl implements GithubUserService {
         // Checking if username is valid & user exists in GitHub
         final GithubUser githubUser = fetchNewGithubUser(username);
         if(null == githubUser) {
+            log.debug("Username {} is invalid, and user doesn't exist", username);
             return -1;
         }
 
         int rowsAdded = 0;
 
         log.info("\t => PROCESSING addUser using JDBC Template");
+        log.debug("ADDING new GITHUB USER : {}", githubUser);
         try {
             rowsAdded = githubJdbcRepository.addUser(githubUser);
         } catch (DataIntegrityViolationException e) {                       // catches DuplicateKeyException
@@ -110,7 +121,34 @@ public class GithubUserServiceImpl implements GithubUserService {
     }
 
     private GithubUser fetchNewGithubUser(String username) {
-        
-        return null;
+        final GithubApiUserDto githubApiUserDto;
+        try {
+            githubApiUserDto = restTemplate.getForObject(String.format(Constants.GITHUB_USER_URL, username), GithubApiUserDto.class);
+        } catch (HttpClientErrorException e) {
+            return null;                            // Username invalid or not found
+        }
+
+        final Integer followersCount = getListSize(Constants.GITHUB_FOLLOWERS_URL, username);
+        final Integer followingCount = getListSize(Constants.GITHUB_FOLLOWING_URL, username);
+        final GithubApiRepoDto githubApiRepoDto = getMostStarredProject(username);
+        return GithubUserMapper.INSTANCE.toEntity(githubApiUserDto, githubApiRepoDto, followersCount, followingCount);
+    }
+
+    private int getListSize(String url, String username) {
+        ResponseEntity<Object[]> response = restTemplate.getForEntity(String.format(url, username), Object[].class);
+        return response.getBody() != null ? response.getBody().length : 0;
+    }
+
+    private GithubApiRepoDto getMostStarredProject(String username) {
+        ResponseEntity<GithubApiRepoDto[]> response = restTemplate.getForEntity(
+                String.format(Constants.GITHUB_REPOS_URL, username),
+                GithubApiRepoDto[].class
+        );
+        GithubApiRepoDto[] repos = response.getBody();
+
+        List<GithubApiRepoDto> repoList = repos != null ? Arrays.asList(repos) : List.of();
+        return repoList.stream()
+                .max(Comparator.comparingInt(GithubApiRepoDto::stargazers_count))
+                .orElse(null);
     }
 }

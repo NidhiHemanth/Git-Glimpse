@@ -2,6 +2,8 @@ package org.bootcamp.com.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bootcamp.com.constants.Constants;
+import org.bootcamp.com.dto.GithubApiRepoDto;
+import org.bootcamp.com.dto.GithubApiUserDto;
 import org.bootcamp.com.dto.GithubUserDto;
 import org.bootcamp.com.exception.RowMappingException;
 import org.bootcamp.com.model.GithubProject;
@@ -26,23 +28,26 @@ public class GithubUserMapper {
     // private constructor
     private GithubUserMapper() {}
 
-    public GithubUser toEntity(GithubUserDto githubUserDto) {
-        if(null == githubUserDto) {
+    public GithubUser toEntity(GithubApiUserDto githubApiUserDto, GithubApiRepoDto githubApiRepoDto, Integer followers, Integer following) {
+        if(null == githubApiUserDto) {
             return null;
         }
 
         final GithubUser githubUser = new GithubUser();
-        githubUser.setId(githubUserDto.getId());
-        githubUser.setUsername(githubUserDto.getUsername());
-        githubUser.setFullName(githubUserDto.getFullName());
-        githubUser.setAvatarUrl(githubUserDto.getAvatarUrl());
-        githubUser.setProfileUrl(githubUserDto.getProfileUrl());
-        githubUser.setFollowers(githubUserDto.getFollowers());
-        githubUser.setFollowing(githubUserDto.getFollowing());
-        githubUser.setBio(githubUserDto.getBio());
+        githubUser.setUsername(githubApiUserDto.login());
+        githubUser.setFullName(githubApiUserDto.name());
+        githubUser.setAvatarUrl(githubApiUserDto.avatar_url());
+        githubUser.setProfileUrl(githubApiUserDto.html_url());
+        githubUser.setFollowers(followers);
+        githubUser.setFollowing(following);
+        githubUser.setBio(githubApiUserDto.bio());
         githubUser.setMostStarredProject(new GithubProject());
-        githubUser.getMostStarredProject().setProjectName(githubUserDto.getMostStarredProjectName());
-        githubUser.getMostStarredProject().setHtmlUrl(githubUserDto.getProjectUrl());
+        githubUser.getMostStarredProject().setProjectName(githubApiRepoDto.name());
+        githubUser.getMostStarredProject().setDescription(githubApiRepoDto.description());
+        githubUser.getMostStarredProject().setLanguage(githubApiRepoDto.language());
+        githubUser.getMostStarredProject().setForksCount(githubApiRepoDto.forks_count());
+        githubUser.getMostStarredProject().setHtmlUrl(githubApiRepoDto.html_url());
+        githubUser.getMostStarredProject().setStargazersCount(githubApiRepoDto.stargazers_count());
         return githubUser;
     }
 

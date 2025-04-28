@@ -23,5 +23,10 @@ public class Constants {
 
     public static final List<String> TABLE_COLUMNS = List.of(USERNAME, FULL_NAME, BIO, EMAIL, FOLLOWERS, FOLLOWING, PROJECT_NAME, PROJECT_DESCRIPTION, PROJECT_LANGUAGE, PROJECT_FORKS, PROFILE_URL, PROJECT_STARGAZERS, PROJECT_URL, AVATAR_URL);
 
+    public static final String GITHUB_USER_URL = "https://api.github.com/users/%s";
+    public static final String GITHUB_FOLLOWERS_URL = "https://api.github.com/users/%s/followers";
+    public static final String GITHUB_FOLLOWING_URL = "https://api.github.com/users/%s/following";
+    public static final String GITHUB_REPOS_URL = "https://api.github.com/users/%s/repos";
+
     private Constants() {}
 }
