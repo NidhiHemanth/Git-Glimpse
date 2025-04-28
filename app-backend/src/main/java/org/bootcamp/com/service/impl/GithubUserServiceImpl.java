@@ -13,7 +13,9 @@ import org.bootcamp.com.service.GithubUserService;
 import org.bootcamp.com.utils.GithubUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ public class GithubUserServiceImpl implements GithubUserService {
     private final GithubJpaRepository githubJpaRepository;
     private final GithubJdbcRepository githubJdbcRepository;
     private final SqlQueryBuilder sqlQueryBuilder;
+    private final RestTemplate restTemplate;
 
     @Autowired
     private ApplicationProperties applicationProperties;
@@ -30,10 +33,12 @@ public class GithubUserServiceImpl implements GithubUserService {
     @Autowired
     public GithubUserServiceImpl(GithubJpaRepository githubJpaRepository,
                                  GithubJdbcRepository githubJdbcRepository,
-                                 SqlQueryBuilder sqlQueryBuilder) {
+                                 SqlQueryBuilder sqlQueryBuilder,
+                                 RestTemplate restTemplate) {
         this.githubJpaRepository = githubJpaRepository;
         this.githubJdbcRepository = githubJdbcRepository;
         this.sqlQueryBuilder = sqlQueryBuilder;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -86,12 +91,26 @@ public class GithubUserServiceImpl implements GithubUserService {
 
     @Override
     public int addUser(String username) {
-        // Checking if username is valid & user exists
-        GithubUser githubUser = githubJdbcRepository.findByUsername("sn99");
-        githubUser.setId(null);
-        githubUser.setUsername("sn69");
+        // Checking if username is valid & user exists in GitHub
+        final GithubUser githubUser = fetchNewGithubUser(username);
+        if(null == githubUser) {
+            return -1;
+        }
+
+        int rowsAdded = 0;
 
         log.info("\t => PROCESSING addUser using JDBC Template");
-        return githubJdbcRepository.addUser(githubUser);
+        try {
+            rowsAdded = githubJdbcRepository.addUser(githubUser);
+        } catch (DataIntegrityViolationException e) {                       // catches DuplicateKeyException
+            log.debug("User {} already exists in database", username);
+        }
+
+        return rowsAdded;
+    }
+
+    private GithubUser fetchNewGithubUser(String username) {
+        
+        return null;
     }
 }
