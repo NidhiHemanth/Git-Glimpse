@@ -102,4 +102,5 @@ we don't have all the data available because infinite scroll loads data in chunk
 
 ## TODO
 
-- [ ] TBD
+- [ ] Authenticate GitHub API calls using personal access token
+- [ ] Call OpenAI API endpoints to summarize a user
