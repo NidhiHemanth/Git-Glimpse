@@ -22,7 +22,11 @@ This module contains the batch processing code to :
 3. Persist the data into an MariaDB (SQL) database
 
 Add the path to your JSON files to the field `ref.inputDir` in `application-local.yml` file of data-ingest module.
-Then set the `spring.profiles.active=local` in your environment variables while running your Batch application.
+
+Add the following Environment Variables while running the SpringBoot Batch application:
+- `spring.profiles.active=local`
+- `DB_USERNAME=<root>` this is the default username for your database
+- `DB_PASSWORD=<password>` add your database password
 
 Make sure you have MariaDB set up, with a database called `github`.
 Execute the following command to change the character set of the Database to support all Unicode characters (in case your data has emojis or special symbols).
@@ -39,6 +43,12 @@ This module contains APIs to perform various operations on the GitHub Users data
 - It allows filtering of data on selected fields
 - It allows sorting of the resultant data
 - The API supports infinite scroll feature, using Cursor based Pagination
+
+Add the following Environment Variables while running the SpringBoot Batch application:
+- `spring.profiles.active=local`
+- `DB_USERNAME=<root>` this is the default username for your database
+- `DB_PASSWORD=<password>` add your database password
+- `GITHUB_API_TOKEN=<personal access token>` this is optional
 
 Start the SpringBoot Application and access Swagger [here](http://localhost:8081/swagger-ui/index.html).
 

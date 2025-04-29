@@ -15,9 +15,13 @@ import org.bootcamp.com.response.GithubUserFetchResponse;
 import org.bootcamp.com.service.GithubUserService;
 import org.bootcamp.com.utils.GithubUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -38,6 +42,9 @@ public class GithubUserServiceImpl implements GithubUserService {
 
     @Autowired
     private ApplicationProperties applicationProperties;
+
+    @Value("${github.api.token:}")
+    private String githubApiToken;
 
     @Autowired
     public GithubUserServiceImpl(GithubJpaRepository githubJpaRepository,
@@ -123,7 +130,7 @@ public class GithubUserServiceImpl implements GithubUserService {
     private GithubUser fetchNewGithubUser(String username) {
         final GithubApiUserDto githubApiUserDto;
         try {
-            githubApiUserDto = restTemplate.getForObject(String.format(Constants.GITHUB_USER_URL, username), GithubApiUserDto.class);
+            githubApiUserDto = getGithubUser(username);
         } catch (HttpClientErrorException e) {
             return null;                            // Username invalid or not found
         }
@@ -134,21 +141,69 @@ public class GithubUserServiceImpl implements GithubUserService {
         return GithubUserMapper.INSTANCE.toEntity(githubApiUserDto, githubApiRepoDto, followersCount, followingCount);
     }
 
+    private GithubApiUserDto getGithubUser(String username) {
+        final String url = String.format(Constants.GITHUB_USER_URL, username);
+
+        if(githubApiToken.isEmpty()) {
+            return restTemplate.getForObject(url, GithubApiUserDto.class);
+        }
+
+        return restTemplate.exchange(
+            url,
+            HttpMethod.GET,
+            getAuthorizationHeader(url),
+            GithubApiUserDto.class
+        ).getBody();
+    }
+
     private int getListSize(String url, String username) {
-        ResponseEntity<Object[]> response = restTemplate.getForEntity(String.format(url, username), Object[].class);
+        final String getUrl = String.format(url, username);
+        final ResponseEntity<Object[]> response;
+
+        if(githubApiToken.isEmpty()) {
+            response = restTemplate.getForEntity(getUrl, Object[].class);
+        } else {
+            response = restTemplate.exchange(
+                getUrl,
+                HttpMethod.GET,
+                getAuthorizationHeader(getUrl),
+                Object[].class
+            );
+        }
+
         return response.getBody() != null ? response.getBody().length : 0;
     }
 
     private GithubApiRepoDto getMostStarredProject(String username) {
-        ResponseEntity<GithubApiRepoDto[]> response = restTemplate.getForEntity(
-                String.format(Constants.GITHUB_REPOS_URL, username),
-                GithubApiRepoDto[].class
-        );
-        GithubApiRepoDto[] repos = response.getBody();
+        final String url = String.format(Constants.GITHUB_REPOS_URL, username);
+        final ResponseEntity<GithubApiRepoDto[]> response;
 
+        if(githubApiToken.isEmpty()) {
+            response = restTemplate.getForEntity(
+                url,
+                GithubApiRepoDto[].class
+            );
+        } else {
+            response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                getAuthorizationHeader(url),
+                GithubApiRepoDto[].class
+            );
+        }
+
+        GithubApiRepoDto[] repos = response.getBody();
         List<GithubApiRepoDto> repoList = repos != null ? Arrays.asList(repos) : List.of();
+
         return repoList.stream()
                 .max(Comparator.comparingInt(GithubApiRepoDto::stargazers_count))
                 .orElse(null);
+    }
+
+    private HttpEntity<String> getAuthorizationHeader(String url) {
+        log.info("\tAccessing {} Github API with Access Token (Authenticated)", url);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + githubApiToken);
+        return new HttpEntity<>(headers);
     }
 }

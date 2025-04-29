@@ -13,11 +13,12 @@ spring:
     hikari:
       maximum-pool-size: 10
     url: jdbc:mariadb://localhost:3306/github?useUnicode=true&characterEncoding=utf8mb4&connectionCollation=utf8mb4_unicode_ci
-    username: root
-    password: nini69
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
 
 # Configuring Spring Actuator
+# (Check health of the application at http://localhost:8081/actuator/health)
 management:
   endpoints:
     web:
@@ -45,3 +46,7 @@ logging:
     root: WARN
     org.bootcamp.com: DEBUG
     org.springframework: INFO
+
+github:
+  api:
+    token: ${GITHUB_API_TOKEN:}
