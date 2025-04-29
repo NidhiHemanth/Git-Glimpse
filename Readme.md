@@ -114,4 +114,9 @@ we don't have all the data available because infinite scroll loads data in chunk
 
 - [x] Authenticate GitHub API calls using personal access token
 - [x] Call OpenAI API endpoints to summarize a user
+- [ ] Create Front-End application
+- [ ] Make API Calls and log from the UI application
+- [ ] Add AG-Grid to the frontend
+- [ ] Make custom API calls for filter & sorting in AG-Grid 
+- [ ] Try alternative free AI APIs instead of OpenAI 
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
