@@ -111,7 +111,7 @@ public class GithubUserServiceImpl implements GithubUserService {
         final GithubUser githubUser = fetchNewGithubUser(username);
         if(null == githubUser) {
             log.debug("Username {} is invalid, and user doesn't exist", username);
-            return -1;
+            return 0;
         }
 
         int rowsAdded = 0;
@@ -122,6 +122,7 @@ public class GithubUserServiceImpl implements GithubUserService {
             rowsAdded = githubJdbcRepository.addUser(githubUser);
         } catch (DataIntegrityViolationException e) {                       // catches DuplicateKeyException
             log.debug("User {} already exists in database", username);
+            return -1;
         }
 
         return rowsAdded;

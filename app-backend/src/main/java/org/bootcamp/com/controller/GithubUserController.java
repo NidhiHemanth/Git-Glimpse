@@ -88,10 +88,13 @@ public class GithubUserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User Added"),
             @ApiResponse(responseCode = "404", description = "Invalid Username"),
+            @ApiResponse(responseCode = "409", description = "User Already Exists"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @GetMapping("/user/add/{username}")
     public ResponseEntity<Void> addUser(@PathVariable String username) {
-        return new ResponseEntity<>(githubUserService.addUser(username) > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        final int rowsAdded = githubUserService.addUser(username);
+        if(rowsAdded == -1) return new ResponseEntity<>(HttpStatus.CONFLICT);
+        return new ResponseEntity<>(rowsAdded > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 }
