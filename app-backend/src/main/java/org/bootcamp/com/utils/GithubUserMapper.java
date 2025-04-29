@@ -41,13 +41,17 @@ public class GithubUserMapper {
         githubUser.setFollowers(followers);
         githubUser.setFollowing(following);
         githubUser.setBio(githubApiUserDto.bio());
-        githubUser.setMostStarredProject(new GithubProject());
-        githubUser.getMostStarredProject().setProjectName(githubApiRepoDto.name());
-        githubUser.getMostStarredProject().setDescription(githubApiRepoDto.description());
-        githubUser.getMostStarredProject().setLanguage(githubApiRepoDto.language());
-        githubUser.getMostStarredProject().setForksCount(githubApiRepoDto.forks_count());
-        githubUser.getMostStarredProject().setHtmlUrl(githubApiRepoDto.html_url());
-        githubUser.getMostStarredProject().setStargazersCount(githubApiRepoDto.stargazers_count());
+
+        if(null != githubApiRepoDto) {
+            githubUser.setMostStarredProject(new GithubProject());
+            githubUser.getMostStarredProject().setProjectName(githubApiRepoDto.name());
+            githubUser.getMostStarredProject().setDescription(githubApiRepoDto.description());
+            githubUser.getMostStarredProject().setLanguage(githubApiRepoDto.language());
+            githubUser.getMostStarredProject().setForksCount(githubApiRepoDto.forks_count());
+            githubUser.getMostStarredProject().setHtmlUrl(githubApiRepoDto.html_url());
+            githubUser.getMostStarredProject().setStargazersCount(githubApiRepoDto.stargazers_count());
+        }
+
         return githubUser;
     }
 
@@ -63,8 +67,12 @@ public class GithubUserMapper {
         githubUserDto.setFollowers(githubUser.getFollowers());
         githubUserDto.setFollowing(githubUser.getFollowing());
         githubUserDto.setBio(githubUser.getBio());
-        githubUserDto.setMostStarredProjectName(githubUser.getMostStarredProject().getProjectName());
-        githubUserDto.setProjectUrl(githubUser.getMostStarredProject().getHtmlUrl());
+
+        if(null != githubUser.getMostStarredProject()) {
+            githubUserDto.setMostStarredProjectName(githubUser.getMostStarredProject().getProjectName());
+            githubUserDto.setProjectUrl(githubUser.getMostStarredProject().getHtmlUrl());
+        }
+
         githubUserDto.setProfileUrl(githubUser.getProfileUrl());
         githubUserDto.setAvatarUrl(githubUser.getAvatarUrl());
         return githubUserDto;
@@ -82,9 +90,13 @@ public class GithubUserMapper {
             githubUser.setFollowers(rs.getInt(Constants.FOLLOWERS));
             githubUser.setFollowing(rs.getInt(Constants.FOLLOWING));
             githubUser.setBio(rs.getString(Constants.BIO));
-            githubUser.setMostStarredProject(new GithubProject());
-            githubUser.getMostStarredProject().setProjectName(rs.getString(Constants.PROJECT_NAME));
-            githubUser.getMostStarredProject().setHtmlUrl(rs.getString(Constants.PROJECT_URL));
+
+            rs.getString(Constants.PROJECT_NAME);
+            if(!rs.wasNull()) {
+                githubUser.setMostStarredProject(new GithubProject());
+                githubUser.getMostStarredProject().setProjectName(rs.getString(Constants.PROJECT_NAME));
+                githubUser.getMostStarredProject().setHtmlUrl(rs.getString(Constants.PROJECT_URL));
+            }
         } catch (SQLException e) {
             log.error("ROW MAPPING EXCEPTION while processing {}", username);
             throw new RowMappingException(e);
