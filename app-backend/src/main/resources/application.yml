@@ -50,3 +50,7 @@ logging:
 github:
   api:
     token: ${GITHUB_API_TOKEN:}
+
+openai:
+  api:
+    key: ${OPEN_AI_API_KEY}

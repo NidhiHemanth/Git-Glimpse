@@ -112,5 +112,6 @@ we don't have all the data available because infinite scroll loads data in chunk
 
 ## TODO
 
-- [ ] Authenticate GitHub API calls using personal access token
-- [ ] Call OpenAI API endpoints to summarize a user
+- [x] Authenticate GitHub API calls using personal access token
+- [x] Call OpenAI API endpoints to summarize a user
+- [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
