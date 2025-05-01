@@ -118,5 +118,5 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [ ] Make API Calls and log from the UI application
 - [ ] Add AG-Grid to the frontend
 - [ ] Make custom API calls for filter & sorting in AG-Grid 
-- [ ] Try alternative free AI APIs instead of OpenAI 
+- [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
