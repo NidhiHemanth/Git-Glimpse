@@ -10,4 +10,3 @@ export interface GithubUser {
     profileUrl: string;
     avatarUrl: string;
 }
-  

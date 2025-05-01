@@ -1,2 +1,2 @@
-export { columnDefs } from './ColumnDefs';
+export { generateColumnDefs } from './ColumnDefs';
 export type { GithubUser } from './GithubUser';
