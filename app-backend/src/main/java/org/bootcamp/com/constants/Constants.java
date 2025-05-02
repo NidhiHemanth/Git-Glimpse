@@ -26,7 +26,7 @@ public class Constants {
     public static final String GITHUB_USER_URL = "https://api.github.com/users/%s";
     public static final String GITHUB_FOLLOWERS_URL = "https://api.github.com/users/%s/followers";
     public static final String GITHUB_FOLLOWING_URL = "https://api.github.com/users/%s/following";
-    public static final String GITHUB_REPOS_URL = "https://api.github.com/users/%s/repos";
+    public static final String GITHUB_REPOS_URL = "https://api.github.com/users/%s/repos?per_page=100&page=%s";
     public static final String GITHUB_STARRED_REPOS_URL = "https://api.github.com/users/%s/starred";
     public static final String OPEN_AI_API_URL = "https://api.openai.com/v1/chat/completions";
 

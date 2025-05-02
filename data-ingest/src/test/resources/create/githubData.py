@@ -11,7 +11,7 @@ def scrapeFollowersAndFollowing(usernames: list) -> list:
 
     for username in usernames:
         for api in api_lists:
-            response = requests.get("https://api.github.com/users/{}/{}".format(username, api), headers=HEADERS)
+            response = requests.get(f"https://api.github.com/users/{username}/{api}", headers=HEADERS)
             for user in response.json():
                 new_usernames_set.add(user["login"])
 
@@ -22,31 +22,45 @@ def scrapeFollowersAndFollowing(usernames: list) -> list:
     return new_usernames_set
 
 def getProjectData(username: str, api_url: str) -> dict:
-    api_url = api_url.split("{")[0] + "?per_page=100"
+    api_url = api_url.split("{")[0]
 
-    # response.json() is a list of projects
-    response = requests.get(api_url, headers=HEADERS)
+    page = 1
+    all_projects = []
 
-    # pick the 5 projects having the most stars
-    top_starred_project = sorted(response.json(), key = lambda x: x["stargazers_count"], reverse=True)[:1]
+    while True:
+        url = f"{api_url}?per_page=100&page={page}"
+        response = requests.get(url, headers=HEADERS)
 
-    projects = []
-    for project in top_starred_project:
-        project_object = SAMPLE_PROJECT.copy()
-        project_object["projectName"] = project["full_name"]
-        project_object["description"] = project["description"]
-        project_object["language"] = project["language"]
-        project_object["stargazersCount"] = project["stargazers_count"]
-        project_object["forksCount"] = project["forks_count"]
-        project_object["htmlUrl"] = project["html_url"]
-        projects.append(project_object)
+        # response.json() is a list of projects
+        repos = response.json()
+    
+        if not repos:
+            break
 
-    return projects[0] if len(projects) > 0 else {}
+        all_projects.extend(repos)
+        page += 1
+
+    print(f">> Total projects for {username} is {len(all_projects)}")
+    if not all_projects:
+        return {}
+
+    # Pick the project with the most stars
+    top_starred_project = max(all_projects, key=lambda x: x["stargazers_count"])
+
+    project_object = SAMPLE_PROJECT.copy()
+    project_object["projectName"] = top_starred_project["full_name"]
+    project_object["description"] = top_starred_project["description"]
+    project_object["language"] = top_starred_project["language"]
+    project_object["stargazersCount"] = top_starred_project["stargazers_count"]
+    project_object["forksCount"] = top_starred_project["forks_count"]
+    project_object["htmlUrl"] = top_starred_project["html_url"]
+
+    return project_object
 
 def getUserData(username: str) -> str:
     user_object = SAMPLE_USER.copy()
 
-    response = requests.get("https://api.github.com/users/{}".format(username), headers=HEADERS)
+    response = requests.get(f"https://api.github.com/users/{username}", headers=HEADERS)
     if response.status_code != 200:
         print("ERR: {} not found".format(username))
 

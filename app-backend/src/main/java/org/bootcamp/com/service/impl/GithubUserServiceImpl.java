@@ -30,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -114,7 +115,7 @@ public class GithubUserServiceImpl implements GithubUserService {
             return 0;
         }
 
-        int rowsAdded = 0;
+        int rowsAdded;
 
         log.info("\t => PROCESSING addUser using JDBC Template");
         log.debug("ADDING new GITHUB USER : {}", githubUser);
@@ -176,26 +177,37 @@ public class GithubUserServiceImpl implements GithubUserService {
     }
 
     private GithubApiRepoDto getMostStarredProject(String username) {
-        final String url = String.format(Constants.GITHUB_REPOS_URL, username);
-        final ResponseEntity<GithubApiRepoDto[]> response;
+        int page = 1;
+        List<GithubApiRepoDto> repoList = new ArrayList<>();
 
-        if(githubApiToken.isEmpty()) {
-            response = restTemplate.getForEntity(
-                url,
-                GithubApiRepoDto[].class
-            );
-        } else {
-            response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                getAuthorizationHeader(url),
-                GithubApiRepoDto[].class
-            );
+        while(true) {
+            final String url = String.format(Constants.GITHUB_REPOS_URL, username, page);
+            final ResponseEntity<GithubApiRepoDto[]> response;
+
+            if(githubApiToken.isEmpty()) {
+                response = restTemplate.getForEntity(
+                    url,
+                    GithubApiRepoDto[].class
+                );
+            } else {
+                response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    getAuthorizationHeader(url),
+                    GithubApiRepoDto[].class
+                );
+            }
+
+            GithubApiRepoDto[] repos = response.getBody();
+            if(repos == null || repos.length == 0) {
+                break;
+            }
+
+            repoList.addAll(Arrays.asList(repos));
+            page += 1;
         }
 
-        GithubApiRepoDto[] repos = response.getBody();
-        List<GithubApiRepoDto> repoList = repos != null ? Arrays.asList(repos) : List.of();
-
+        log.info("User {} has a total of {} projects", username, repoList.size());
         return repoList.stream()
                 .max(Comparator.comparingInt(GithubApiRepoDto::stargazers_count))
                 .orElse(null);

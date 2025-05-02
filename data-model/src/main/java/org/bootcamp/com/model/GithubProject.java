@@ -1,5 +1,6 @@
 package org.bootcamp.com.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class GithubProject implements Serializable {
     @NotBlank
     private String projectName;
 
+    @Column(length = 1000)
     private String description;
 
     private String language;
