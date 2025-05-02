@@ -52,9 +52,8 @@ const DataTable = () => {
 
   useEffect(() => {
     // Auto size the columns after data is loaded
-    // For this to work, we have to unset flex in columnDefs
+    // For this to work, we have to unset flex in columnDefs for these columns
     if (gridRef.current) {
-      gridRef.current.api.sizeColumnsToFit(); // Resize all columns to fit
       gridRef.current.api.autoSizeColumns(['username', 'fullName']); // Auto-size specific columns
     }
   }, [rowData]);
@@ -69,9 +68,10 @@ const DataTable = () => {
               headerClass: 'center-header',
               cellClass: 'center-cell',
               resizable: true,
-              sortable: false
+              sortable: false,
+              minWidth: 150
             }}
-            domLayout="autoHeight"
+            domLayout="normal"
             components={{ customTooltip: CustomTooltip }}
             tooltipShowDelay={0}
         />
