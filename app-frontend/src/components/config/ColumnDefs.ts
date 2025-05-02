@@ -1,5 +1,5 @@
 import { ColDef } from "ag-grid-community";
-import { GithubUser } from "./GithubUser";
+import { GithubUser } from "../../api";
 
 interface ColumnDefsParams {
   usernameRenderer: React.FC<any>;

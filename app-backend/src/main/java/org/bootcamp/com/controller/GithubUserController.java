@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/github")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class GithubUserController {
     @Autowired
     GithubUserService githubUserService;
