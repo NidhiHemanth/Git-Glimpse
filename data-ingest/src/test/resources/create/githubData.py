@@ -22,7 +22,7 @@ def scrapeFollowersAndFollowing(usernames: list) -> list:
     return new_usernames_set
 
 def getProjectData(username: str, api_url: str) -> dict:
-    api_url = api_url.split("{")[0]
+    api_url = api_url.split("{")[0] + "?per_page=100"
 
     # response.json() is a list of projects
     response = requests.get(api_url, headers=HEADERS)
