@@ -36,7 +36,14 @@ public class SqlQueryBuilder {
                     return "";
                 }))
                 .collect(Collectors.joining(" AND "));
-        return whereStatement.isEmpty() ? "" : "WHERE " + whereStatement + "\n";
+
+        // for first fetch, since frontend doesn't have any lastId yet
+        if(lastId == -1) {
+            return whereStatement.isEmpty() ? "" : "WHERE " + whereStatement + "\n";
+        }
+
+        final String filterByLastId = "WHERE id < " + lastId;
+        return whereStatement.isEmpty() ? filterByLastId + "\n" : filterByLastId + " AND " + whereStatement + "\n";
     }
 
     private String sortQuery(List<SortColumn> sortColumns) {
