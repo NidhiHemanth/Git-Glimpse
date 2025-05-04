@@ -4,9 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { GithubUser } from "../api";
-import { generateColumnDefs } from "./config/ColumnDefs";
+import { columnDefs } from "./config/ColumnDefs";
 import sampleData from '../data/sample.json';
 import { useFetchGithubUser } from '../api/github/findGithubUser'
+import { CustomTooltip } from "./config/CustomToolTip";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -32,43 +33,6 @@ const DataTable = () => {
       setRowData(prevRowData => [...prevRowData, user]);
     }
   }, [user]);
-
-  const CustomTooltip = (props: any) => {
-    const { value } = props;
-    return (
-      <div style={{ backgroundColor: 'lightgray', padding: '5px' }}>
-        <p>{value}</p>
-      </div>
-    );
-  };
-
-  // Generate columnDefs dynamically with the required renderers
-  const columnDefs = generateColumnDefs({
-    usernameRenderer: (params: any) => {
-      const { value, data } = params;
-      return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <img
-            src={data.avatarUrl}
-            alt={`${value}'s avatar`}
-            style={{ width: 24, height: 24, borderRadius: '50%' }}
-          />
-          <a href={data.profileUrl} target="_blank" rel="noopener noreferrer">
-            {value}
-          </a>
-        </div>
-      );
-    },
-    projectNameRenderer: (params: any) => {
-      const { value, data } = params;
-      return (
-        value && 
-        <a href={data?.projectUrl} target="_blank" rel="noopener noreferrer">
-          { value.substring(value.lastIndexOf("/") + 1) }
-        </a>
-      );
-    }
-  });
 
   // Container: Defines the grid's theme & dimensions.
   return (
