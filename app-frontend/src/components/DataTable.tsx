@@ -1,15 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { ModuleRegistry, GridReadyEvent } from "ag-grid-community";
 import { ServerSideRowModelModule } from "ag-grid-enterprise";
 import { AgGridReact } from "ag-grid-react";
-import { GithubUser } from "../api";
 import { columnDefs } from "./config/ColumnDefs";
 import { CustomTooltip } from "./config/CustomToolTip";
 import { defaultColumnDefs } from "./config/DefaultColumnDefs";
 import { FetchRequest } from "../api/types/FetchRequest";
-import { handleApiError } from "../api/github/handleErrors";
+import { fetchUsers } from "../api/github/fetchUsers";
 
 ModuleRegistry.registerModules([ServerSideRowModelModule]);
 
@@ -35,7 +34,7 @@ const DataTable = () => {
           column: colId,
           direction: sort.toUpperCase()
         })
-        console.log(`Sort Model: ${sortModel}, Request: ${request.sortColumns}`)
+        console.log(`Sort Model: ${JSON.stringify(sortModel)}, Request: ${JSON.stringify(request.sortColumns)}`);
       }
 
       const filterKeys = Object.keys(filterModel)
@@ -46,17 +45,10 @@ const DataTable = () => {
           columnFilterType: 'stringColumnFilter',
           operator: filterModel[filter]['type']
         })
-        console.log(`Filter Model: ${filterModel}, Request: ${request.columnFilters}`)
+        console.log(`Filter Model: ${JSON.stringify(filterModel)}, Request: ${JSON.stringify(request.columnFilters)}`);
       })
 
-      fetch("http://localhost:8081/api/github/fetch", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(request)
-      })
-      .then((httpResponse) => httpResponse.json())
+      fetchUsers(request)
       .then((response) => {
         console.log("RESPONSE = ", response);
         params.success({
@@ -96,6 +88,7 @@ const DataTable = () => {
         defaultColDef={defaultColumnDefs}
         components={{ customTooltip: CustomTooltip }}
         tooltipShowDelay={0}
+        debug={true}
       />
     </div>
   );
