@@ -82,6 +82,5 @@ export const columnDefs: ColDef<GithubUser>[] = [
     minWidth: 200,
     tooltipField: 'mostStarredProjectName',
     cellRenderer: projectNameRenderer,
-    filter: true,
   },
 ]

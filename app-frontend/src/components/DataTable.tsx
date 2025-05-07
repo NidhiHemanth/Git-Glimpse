@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useEffect, useCallback } from "react";
-import { ModuleRegistry, GridReadyEvent } from "ag-grid-community";
+import { ModuleRegistry, GridReadyEvent, TextFilterModule } from "ag-grid-community";
 import { ServerSideRowModelModule } from "ag-grid-enterprise";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./config/ColumnDefs";
@@ -10,7 +10,7 @@ import { defaultColumnDefs } from "./config/DefaultColumnDefs";
 import { FetchRequest } from "../api/types/FetchRequest";
 import { fetchUsers } from "../api/github/fetchUsers";
 
-ModuleRegistry.registerModules([ServerSideRowModelModule]);
+ModuleRegistry.registerModules([ServerSideRowModelModule, TextFilterModule]);
 
 const DataTable = () => {
   const gridRef = useRef<AgGridReact>(null);
@@ -88,6 +88,7 @@ const DataTable = () => {
         defaultColDef={defaultColumnDefs}
         components={{ customTooltip: CustomTooltip }}
         tooltipShowDelay={0}
+        suppressMenuHide={false}
         debug={true}
       />
     </div>

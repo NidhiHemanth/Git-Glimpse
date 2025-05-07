@@ -3,6 +3,6 @@ export const defaultColumnDefs = {
   cellClass: 'center-cell',
   resizable: true,
   sortable: false,
-  suppressHeaderMenuButton: false,
+  filter: false,
   minWidth: 150
 };
