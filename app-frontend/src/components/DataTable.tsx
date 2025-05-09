@@ -10,11 +10,13 @@ import { defaultColumnDefs } from "./config/DefaultColumnDefs";
 import { FetchRequest } from "../api/types/FetchRequest";
 import { fetchUsers } from "../api/github/fetchUsers";
 import NoRowsOverlay from "./NoRowsOverlay";
+import { GithubUser } from "../api";
 
 ModuleRegistry.registerModules([ServerSideRowModelModule, TextFilterModule, TooltipModule]);
 
 const DataTable = () => {
-  const gridRef = useRef<AgGridReact>(null);
+  const gridRef = useRef<AgGridReact<GithubUser>>(null);
+  
   const onGridReady = useCallback((params: GridReadyEvent) => {
     params.api.setGridOption('serverSideDatasource', datasource);
   }, [])
@@ -73,37 +75,57 @@ const DataTable = () => {
     },
   };
 
-  useEffect(() => {
-    // Auto size the columns after data is loaded
-    // For this to work, we have to unset flex in columnDefs for these columns
+  // useEffect(() => {
+  //   // Auto size the columns after data is loaded
+  //   // For this to work, we have to unset flex in columnDefs for these columns
+  //   if (gridRef.current) {
+  //     console.log("Autosized columns username & email successfully")
+  //     gridRef.current.api.autoSizeColumns(['username', 'fullName']); // Auto-size specific columns
+  //   }
+  // }, []);
+
+  const handleClearFilters = useCallback(() => {
     if (gridRef.current) {
-      gridRef.current.api.autoSizeColumns(['username', 'fullName']); // Auto-size specific columns
+      const blankFilterColumns = ['email', 'mostStarredProjectName']
+      gridRef.current.api.setFilterModel(null);
+      blankFilterColumns.forEach(column => {
+        gridRef.current?.api.destroyFilter(column);
+      })
+      gridRef.current.api.onFilterChanged();
+      gridRef.current.api.refreshServerSide({ purge: true });
+      console.log("Unset all the column filters successfully")
     }
   }, []);
 
   // Container: Defines the grid's theme & dimensions.
   return (
-    <div style={{ height: '90%', width: '100%', overflowX: 'auto' }} className="ag-theme-alpine">
-      <AgGridReact
-        rowModelType={'serverSide'}
-        //serverSideInfiniteScroll={true}
-        infiniteInitialRowCount={20}
-        rowBuffer={0}
-        cacheBlockSize={100}
-        cacheOverflowSize={2}
-        maxConcurrentDatasourceRequests={1}
-        maxBlocksInCache={5}
-        onGridReady={onGridReady}
-        gridOptions={{ noRowsOverlayComponent: NoRowsOverlay }}
-        //datasource={datasource}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColumnDefs}
-        components={{ customTooltip: CustomTooltip }}
-        tooltipShowDelay={0}
-        suppressMenuHide={false}
-        overlayNoRowsTemplate={'<no-rows-overlay'}
-        debug={true}
-      />
+    <div style={{ height: '90vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
+      <button style={{ padding: '5px 10px', marginBottom: '10px', cursor: 'pointer' }} onClick={handleClearFilters}>
+        Clear Filters
+      </button>
+      <div style={{ flex: 1, overflow: 'hidden' }} className="ag-theme-alpine">
+        <AgGridReact<GithubUser>
+          ref={gridRef}
+          rowModelType={'serverSide'}
+          //serverSideInfiniteScroll={true}
+          infiniteInitialRowCount={20}
+          rowBuffer={0}
+          cacheBlockSize={100}
+          cacheOverflowSize={2}
+          maxConcurrentDatasourceRequests={1}
+          maxBlocksInCache={5}
+          onGridReady={onGridReady}
+          gridOptions={{ noRowsOverlayComponent: NoRowsOverlay }}
+          //datasource={datasource}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColumnDefs}
+          components={{ customTooltip: CustomTooltip }}
+          tooltipShowDelay={0}
+          suppressMenuHide={false}
+          overlayNoRowsTemplate={'<no-rows-overlay'}
+          debug={true}
+        />
+      </div>
     </div>
   );
 };
