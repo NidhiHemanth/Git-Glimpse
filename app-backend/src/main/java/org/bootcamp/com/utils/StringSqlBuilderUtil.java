@@ -23,9 +23,9 @@ public class StringSqlBuilderUtil {
                                           .orElse(columnFilter.getColumn());
         
         if(columnFilter.getOperator() == StringColumnFilter.Operator.BLANK) {
-            return String.format("%s IS NULL OR %s = ''", columnName, columnName);
+            return String.format("(%s IS NULL OR %s = '')", columnName, columnName);
         } else if (columnFilter.getOperator() == StringColumnFilter.Operator.NOT_BLANK) {
-            return String.format("%s IS NOT NULL AND %s <> ''", columnName, columnName);
+            return String.format("(%s IS NOT NULL AND %s <> '')", columnName, columnName);
         }
 
         final String value = columnFilter.getOperator() == StringColumnFilter.Operator.CONTAINS ?
