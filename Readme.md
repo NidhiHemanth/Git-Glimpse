@@ -116,7 +116,10 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [x] Call OpenAI API endpoints to summarize a user - FAIL
 - [x] Create Front-End application & Add AG-Grid to the frontend
 - [x] Make custom API calls for filter & sorting in AG-Grid 
+- [ ] Fix tool tip display for email & bio
+- [ ] Fix construction of request for multiple column filter
 - [ ] Implement infinite scroll
+- [ ] Display NO RECORDS FOUND if response is empty
 - [ ] Add a button to clear all filters
 - [ ] Add input field & button to add a new user
 - [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)

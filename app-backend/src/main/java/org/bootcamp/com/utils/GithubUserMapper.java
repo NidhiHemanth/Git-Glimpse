@@ -25,6 +25,11 @@ import java.util.Optional;
 public class GithubUserMapper {
     public static final GithubUserMapper INSTANCE = new GithubUserMapper();
 
+    public static final Map<String,String> FIELD_TO_COLUMN_MAP = Map.of(
+        "fullName", "full_name",
+        "mostStarredProjectName", "project_name"
+    );
+
     // private constructor
     private GithubUserMapper() {}
 

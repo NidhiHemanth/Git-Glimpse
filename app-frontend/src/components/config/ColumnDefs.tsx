@@ -61,7 +61,7 @@ export const columnDefs: ColDef<GithubUser>[] = [
     filterParams: {
       filterOptions: ["blank", "notBlank"],
       maxNumConditions: 1,
-      buttons: ['reset', 'apply'],
+      //buttons: ['reset', 'apply'],
     },
     tooltipField: 'email'
   },
@@ -80,7 +80,7 @@ export const columnDefs: ColDef<GithubUser>[] = [
     sortable: true,
     filter: true,
     filterParams: {
-      filterOptions: ["equals", "notEqual", "greaterThan", "lesserThan"],
+      filterOptions: ["equals", "notEqual", "greaterThan", "lessThan"],
       maxNumConditions: 1,
     },
   },
@@ -92,7 +92,7 @@ export const columnDefs: ColDef<GithubUser>[] = [
     sortable: true,
     filter: true,
     filterParams: {
-      filterOptions: ["equals", "notEqual", "greaterThan", "lesserThan"],
+      filterOptions: ["equals", "notEqual", "greaterThan", "lessThan"],
       maxNumConditions: 1,
     },
   },
@@ -102,6 +102,11 @@ export const columnDefs: ColDef<GithubUser>[] = [
     flex: 1,
     minWidth: 200,
     tooltipField: 'mostStarredProjectName',
-    cellRenderer: projectNameRenderer,
+    filter: true,
+    filterParams: {
+      filterOptions: ["blank", "notBlank"],
+      maxNumConditions: 1,
+    },
+   cellRenderer: projectNameRenderer,
   },
 ]

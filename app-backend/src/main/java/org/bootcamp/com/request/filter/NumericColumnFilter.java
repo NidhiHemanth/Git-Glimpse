@@ -17,11 +17,11 @@ public class NumericColumnFilter extends ColumnFilter {
     private Operator operator;
 
     public enum Operator {
-        @JsonProperty("equal")
+        @JsonProperty("equals")
         EQUALS,
         @JsonProperty("notEqual")
         NOT_EQUALS,
-        @JsonProperty("lesserThan")
+        @JsonProperty("lessThan")
         GREATER_THAN,
         @JsonProperty("greaterThan")
         LESSER_THAN,

@@ -16,7 +16,7 @@ public class StringColumnFilter extends ColumnFilter {
     private Operator operator;
 
     public enum Operator {
-        @JsonProperty("equal")
+        @JsonProperty("equals")
         EQUALS,
         @JsonProperty("notEqual")
         NOT_EQUALS,

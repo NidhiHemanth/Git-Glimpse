@@ -10,8 +10,8 @@ public class NumericSqlBuilderUtil {
     public static final Map<NumericColumnFilter.Operator, String> sqlOperator = Map.of(
             NumericColumnFilter.Operator.EQUALS, "=",
             NumericColumnFilter.Operator.NOT_EQUALS, "<>",
-            NumericColumnFilter.Operator.GREATER_THAN, ">",
-            NumericColumnFilter.Operator.LESSER_THAN, "<"
+            NumericColumnFilter.Operator.GREATER_THAN, "<",
+            NumericColumnFilter.Operator.LESSER_THAN, ">"
     );
 
     private NumericSqlBuilderUtil() {}

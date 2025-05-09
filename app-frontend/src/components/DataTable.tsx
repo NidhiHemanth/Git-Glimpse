@@ -21,6 +21,7 @@ const DataTable = () => {
   const datasource = {
     getRows(params: any) {
       const { startRow, endRow, filterModel, sortModel } = params.request;
+      const numericColumns = ['followers', 'following'];
       let request: FetchRequest = {
         lastId: -1,
         size: 20,
@@ -42,7 +43,7 @@ const DataTable = () => {
         request.columnFilters.push({
           column: filter,
           value: filterModel[filter]['filter'],
-          columnFilterType: 'stringColumnFilter',
+          columnFilterType: numericColumns.includes(filter) ? 'numericColumnFilter' : 'stringColumnFilter',
           operator: filterModel[filter]['type']
         })
         console.log(`Filter Model: ${JSON.stringify(filterModel)}, Request: ${JSON.stringify(request.columnFilters)}`);
