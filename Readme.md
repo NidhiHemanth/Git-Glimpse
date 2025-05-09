@@ -113,10 +113,11 @@ we don't have all the data available because infinite scroll loads data in chunk
 ## TODO
 
 - [x] Authenticate GitHub API calls using personal access token
-- [x] Call OpenAI API endpoints to summarize a user
-- [ ] Create Front-End application
-- [ ] Make API Calls and log from the UI application
-- [ ] Add AG-Grid to the frontend
-- [ ] Make custom API calls for filter & sorting in AG-Grid 
+- [x] Call OpenAI API endpoints to summarize a user - FAIL
+- [x] Create Front-End application & Add AG-Grid to the frontend
+- [x] Make custom API calls for filter & sorting in AG-Grid 
+- [ ] Implement infinite scroll
+- [ ] Add a button to clear all filters
+- [ ] Add input field & button to add a new user
 - [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
