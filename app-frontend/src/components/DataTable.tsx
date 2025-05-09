@@ -9,6 +9,7 @@ import { CustomTooltip } from "./config/CustomToolTip";
 import { defaultColumnDefs } from "./config/DefaultColumnDefs";
 import { FetchRequest } from "../api/types/FetchRequest";
 import { fetchUsers } from "../api/github/fetchUsers";
+import NoRowsOverlay from "./NoRowsOverlay";
 
 ModuleRegistry.registerModules([ServerSideRowModelModule, TextFilterModule, TooltipModule]);
 
@@ -52,12 +53,21 @@ const DataTable = () => {
       fetchUsers(request)
       .then((response) => {
         console.log("RESPONSE = ", response);
+
+        const rowData = response.githubUsers || [];
+        if (rowData.length === 0) {
+          params.api.showNoRowsOverlay();
+        } else {
+          params.api.hideOverlay();
+        }
+  
         params.success({
           rowData: response.githubUsers
         });
       })
       .catch((error) => {
         console.error(error);
+        params.api.showNoRowsOverlay();
         params.fail()
       })
     },
@@ -84,12 +94,14 @@ const DataTable = () => {
         maxConcurrentDatasourceRequests={1}
         maxBlocksInCache={5}
         onGridReady={onGridReady}
+        gridOptions={{ noRowsOverlayComponent: NoRowsOverlay }}
         //datasource={datasource}
         columnDefs={columnDefs}
         defaultColDef={defaultColumnDefs}
         components={{ customTooltip: CustomTooltip }}
         tooltipShowDelay={0}
         suppressMenuHide={false}
+        overlayNoRowsTemplate={'<no-rows-overlay'}
         debug={true}
       />
     </div>
