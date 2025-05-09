@@ -13,6 +13,7 @@ public class GithubUserDto {
     private Long id;
     private String username;
     private String fullName;
+    private String email;
     private String profileUrl;
     private String bio;
     private String avatarUrl;

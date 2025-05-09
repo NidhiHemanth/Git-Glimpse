@@ -35,6 +35,10 @@ export const columnDefs: ColDef<GithubUser>[] = [
     minWidth: 120,
     sortable: true,
     filter: true,
+    filterParams: {
+      filterOptions: ["equals", "notEqual", "contains"],
+      maxNumConditions: 1,
+    },
     cellRenderer: usernameRenderer,
   },
   {
@@ -43,6 +47,10 @@ export const columnDefs: ColDef<GithubUser>[] = [
     minWidth: 150,
     sortable: true,
     filter: true,
+    filterParams: {
+      filterOptions: ["equals", "notEqual", "contains"],
+      maxNumConditions: 1,
+    },
   },
   {
     field: "email",
@@ -50,6 +58,11 @@ export const columnDefs: ColDef<GithubUser>[] = [
     flex: 1,
     minWidth: 200,
     filter: true,
+    filterParams: {
+      filterOptions: ["blank", "notBlank"],
+      maxNumConditions: 1,
+      buttons: ['reset', 'apply'],
+    },
     tooltipField: 'email'
   },
   {
@@ -66,6 +79,10 @@ export const columnDefs: ColDef<GithubUser>[] = [
     minWidth: 100,
     sortable: true,
     filter: true,
+    filterParams: {
+      filterOptions: ["equals", "notEqual", "greaterThan", "lesserThan"],
+      maxNumConditions: 1,
+    },
   },
   {
     field: "following",
@@ -74,6 +91,10 @@ export const columnDefs: ColDef<GithubUser>[] = [
     minWidth: 100,
     sortable: true,
     filter: true,
+    filterParams: {
+      filterOptions: ["equals", "notEqual", "greaterThan", "lesserThan"],
+      maxNumConditions: 1,
+    },
   },
   {
     field: "mostStarredProjectName",

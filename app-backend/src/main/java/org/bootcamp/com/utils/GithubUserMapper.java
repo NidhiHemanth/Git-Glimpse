@@ -36,6 +36,7 @@ public class GithubUserMapper {
         final GithubUser githubUser = new GithubUser();
         githubUser.setUsername(githubApiUserDto.login());
         githubUser.setFullName(githubApiUserDto.name());
+        githubUser.setEmail(githubApiUserDto.email());
         githubUser.setAvatarUrl(githubApiUserDto.avatar_url());
         githubUser.setProfileUrl(githubApiUserDto.html_url());
         githubUser.setFollowers(followers);
@@ -64,6 +65,7 @@ public class GithubUserMapper {
         githubUserDto.setId(githubUser.getId());
         githubUserDto.setUsername(githubUser.getUsername());
         githubUserDto.setFullName(githubUser.getFullName());
+        githubUserDto.setEmail(githubUser.getEmail());
         githubUserDto.setFollowers(githubUser.getFollowers());
         githubUserDto.setFollowing(githubUser.getFollowing());
         githubUserDto.setBio(githubUser.getBio());
@@ -85,6 +87,7 @@ public class GithubUserMapper {
             githubUser.setId(rs.getLong(Constants.ID));
             githubUser.setUsername(rs.getString(Constants.USERNAME));
             githubUser.setFullName(rs.getString(Constants.FULL_NAME));
+            githubUser.setEmail(rs.getString(Constants.EMAIL));
             githubUser.setAvatarUrl(rs.getString(Constants.AVATAR_URL));
             githubUser.setProfileUrl(rs.getString(Constants.PROFILE_URL));
             githubUser.setFollowers(rs.getInt(Constants.FOLLOWERS));
