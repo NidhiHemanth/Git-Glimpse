@@ -36,7 +36,7 @@ const DataTable = () => {
         const { colId, sort } = sortModel[0]
         request.sortColumns.push({
           column: colId,
-          direction: sort.toUpperCase()
+          sortDirection: sort === 'asc' ? "ascending" : "descending"
         })
         console.log(`Sort Model: ${JSON.stringify(sortModel)}, Request: ${JSON.stringify(request.sortColumns)}`);
       }
@@ -88,10 +88,15 @@ const DataTable = () => {
     if (gridRef.current) {
       const blankFilterColumns = ['email', 'mostStarredProjectName']
       gridRef.current.api.setFilterModel(null);
+      gridRef.current.api.applyColumnState({
+        defaultState: { sort: null },
+        applyOrder: true,
+      });
       blankFilterColumns.forEach(column => {
         gridRef.current?.api.destroyFilter(column);
       })
       gridRef.current.api.onFilterChanged();
+      gridRef.current.api.onSortChanged();
       gridRef.current.api.refreshServerSide({ purge: true });
       console.log("Unset all the column filters successfully")
     }
