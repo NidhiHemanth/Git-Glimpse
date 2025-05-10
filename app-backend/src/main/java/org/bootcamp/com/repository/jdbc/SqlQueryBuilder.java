@@ -10,7 +10,10 @@ import org.bootcamp.com.utils.StringSqlBuilderUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.bootcamp.com.utils.GithubUserMapper.FIELD_TO_COLUMN_MAP;
 
 @Component
 public class SqlQueryBuilder {
@@ -47,14 +50,16 @@ public class SqlQueryBuilder {
     }
 
     private String sortQuery(List<SortColumn> sortColumns) {
-        // adding default ordering by ID
-        sortColumns.addFirst(new SortColumn("id", SortColumn.Direction.DESCENDING));
-
+        final String sortById = "id DESC";
         final String sortColumnList = sortColumns.stream()
-                                        .map(sortColumn -> sortColumn.getColumn() + " " + sortColumn.getSortDirection().getSqlValue())
+                                        .map(sortColumn -> {
+                                            final String columnName = Optional.ofNullable(FIELD_TO_COLUMN_MAP.get(sortColumn.getColumn()))
+                                                    .orElse(sortColumn.getColumn());
+                                            return columnName + " " + sortColumn.getSortDirection().getSqlValue();
+                                        })
                                         .collect(Collectors.joining(", "));
 
-        return "ORDER BY " + sortColumnList + "\n";
+        return String.format("ORDER BY %s \n", sortColumnList.isEmpty() ? sortById : sortColumnList);
     }
 
     private String limitQuery(Integer size) {

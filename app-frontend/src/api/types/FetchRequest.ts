@@ -1,6 +1,6 @@
 export interface SortColumn {
   column: string,
-  direction: 'ascending' | 'descending'
+  sortDirection: 'ascending' | 'descending'
 }
 
 export interface ColumnFilter {
