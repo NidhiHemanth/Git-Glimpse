@@ -120,8 +120,8 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [x] Fix construction of request for multiple column filter
 - [x] Display NO RECORDS FOUND if response is empty
 - [x] Add a button to clear all filters
-- [ ] Fix sorting of columns
-- [ ] Add input field & button to add a new user
+- [x] Fix sorting of columns
+- [x] Add input field & button to add a new user
 - [ ] Implement infinite scroll
 - [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer

@@ -24,6 +24,45 @@
   height: 5%;
 }
 
+.submit-button,
+.clear-button {
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #6d6d6d;
+}
+
+.toast {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #323232;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 5px;
+  opacity: 0;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: toastAnimation 0.5s ease-out forwards, toastFadeOut 1.5s 1s forwards;
+}
+
+.submit-button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@keyframes toastAnimation {
+  0% { top: -50px; opacity: 0; }
+  50% { top: 50px; opacity: 1; }
+  100% { top: 60px; opacity: 1; }
+}
+
+@keyframes toastFadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; top: -50px; }
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

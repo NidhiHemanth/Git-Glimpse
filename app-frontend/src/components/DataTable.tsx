@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import { GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./config/ColumnDefs";
@@ -11,12 +11,16 @@ import { fetchUsers } from "../api/github/fetchUsers";
 import NoRowsOverlay from "./NoRowsOverlay";
 import { GithubUser } from "../api";
 import { registerAgGridModules } from "./agGridModules";
+import { addNewUser } from "../api/github/addNewUser";
 
 registerAgGridModules();
 
 const DataTable = () => {
   const gridRef = useRef<AgGridReact<GithubUser>>(null);
-  
+  const [username, setUsername] = useState<String>('');
+  const [toastMessage, setToastMessage] = useState<String>('');
+  const [isLoading, setIsLoading] = useState(false);
+
   const onGridReady = useCallback((params: GridReadyEvent) => {
     params.api.setGridOption('serverSideDatasource', datasource);
   }, [])
@@ -98,12 +102,47 @@ const DataTable = () => {
     }
   }, []);
 
-  // Container: Defines the grid's theme & dimensions.
+  const showToast = (message: String) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(''), 3000); // hide after 3 seconds
+  };
+
+  const handleSubmitButton = async () => {
+    if (!username.trim()) {
+      showToast('Please enter a valid username.');
+      return;
+    }
+    
+    setIsLoading(true)
+    const response = await addNewUser(username);
+    console.log("GOT RESPONSE: ", response)
+    showToast(response);
+    setIsLoading(false)
+
+    if(response === `User ${username} added successfully.`) {
+      window.location.reload();
+    }
+  };
+
   return (
     <div style={{ height: '90vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
-      <button style={{ padding: '5px 10px', marginBottom: '10px', cursor: 'pointer' }} onClick={handleClearFilters}>
-        Clear Filters
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0px 10px 10px 10px' }}>
+        <div>
+          <input 
+            type="text" 
+            placeholder="Enter username" 
+            onChange={(e) => setUsername(e.target.value)}
+            style={{ padding: '5px', marginRight: '5px' }} 
+          />
+          <button className="submit-button" onClick={handleSubmitButton} disabled={isLoading}>
+            {isLoading ? 'Submitting...' : 'Submit'}
+          </button>
+        </div>
+        <button className="clear-button" onClick={handleClearFilters}>
+          Clear Filters
+        </button>
+        {toastMessage && <div className="toast">{toastMessage}</div>}
+      </div>
       <div style={{ flex: 1, overflow: 'hidden' }} className="ag-theme-alpine">
         <AgGridReact<GithubUser>
           ref={gridRef}
