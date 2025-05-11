@@ -27,12 +27,11 @@ const projectNameRenderer = (params: any) => {
   );
 }
 
-// Column Definitions: Defines & controls grid columns.
 export const columnDefs: ColDef<GithubUser>[] = [
   {
     field: "username",
     headerName: "Username",
-    minWidth: 120,
+    minWidth: 200,
     sortable: true,
     filter: true,
     filterParams: {
@@ -44,7 +43,7 @@ export const columnDefs: ColDef<GithubUser>[] = [
   {
     field: "fullName",
     headerName: "Full Name",
-    minWidth: 150,
+    minWidth: 250,
     sortable: true,
     filter: true,
     filterParams: {
