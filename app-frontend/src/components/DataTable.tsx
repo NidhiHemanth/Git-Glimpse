@@ -1,8 +1,7 @@
 'use client';
 
-import { useRef, useEffect, useCallback } from "react";
-import { ModuleRegistry, GridReadyEvent, TextFilterModule, TooltipModule } from "ag-grid-community";
-import { ServerSideRowModelModule } from "ag-grid-enterprise";
+import { useRef, useCallback } from "react";
+import { GridReadyEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./config/ColumnDefs";
 import { CustomTooltip } from "./config/CustomToolTip";
@@ -11,8 +10,9 @@ import { FetchRequest } from "../api/types/FetchRequest";
 import { fetchUsers } from "../api/github/fetchUsers";
 import NoRowsOverlay from "./NoRowsOverlay";
 import { GithubUser } from "../api";
+import { registerAgGridModules } from "./agGridModules";
 
-ModuleRegistry.registerModules([ServerSideRowModelModule, TextFilterModule, TooltipModule]);
+registerAgGridModules();
 
 const DataTable = () => {
   const gridRef = useRef<AgGridReact<GithubUser>>(null);
@@ -66,6 +66,11 @@ const DataTable = () => {
         params.success({
           rowData: response.githubUsers
         });
+
+        setTimeout(() => {
+          console.log("Auto-sized columns username & email successfully")
+          params.api.autoSizeColumns(['username', 'fullName']);
+        }, 50);
       })
       .catch((error) => {
         console.error(error);
@@ -74,15 +79,6 @@ const DataTable = () => {
       })
     },
   };
-
-  // useEffect(() => {
-  //   // Auto size the columns after data is loaded
-  //   // For this to work, we have to unset flex in columnDefs for these columns
-  //   if (gridRef.current) {
-  //     console.log("Autosized columns username & email successfully")
-  //     gridRef.current.api.autoSizeColumns(['username', 'fullName']); // Auto-size specific columns
-  //   }
-  // }, []);
 
   const handleClearFilters = useCallback(() => {
     if (gridRef.current) {
