@@ -124,4 +124,5 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [x] Add input field & button to add a new user
 - [ ] Implement infinite scroll
 - [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
+- [ ] KeyCloak authentication implementation 
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
