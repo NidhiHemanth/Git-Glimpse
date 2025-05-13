@@ -124,10 +124,15 @@ const DataTable = () => {
     }
   };
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    handleSubmitButton();
+  };
+
   return (
     <div style={{ height: '90vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0px 10px 10px 10px' }}>
-        <div>
+        <form onSubmit={handleFormSubmit}>
           <input 
             type="text" 
             placeholder="Enter username" 
@@ -135,9 +140,9 @@ const DataTable = () => {
             style={{ padding: '5px', marginRight: '5px' }} 
           />
           <button className="submit-button" onClick={handleSubmitButton} disabled={isLoading}>
-            {isLoading ? 'Submitting...' : 'Submit'}
+            {isLoading ? 'Adding user...' : 'Add User'}
           </button>
-        </div>
+        </form>
         <button className="clear-button" onClick={handleClearFilters}>
           Clear Filters
         </button>
