@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback } from "react";
-import { GridReadyEvent } from "ag-grid-community";
+import { GridApi, GridReadyEvent, IServerSideDatasource } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./config/ColumnDefs";
 import { CustomTooltip } from "./config/CustomToolTip";
@@ -12,6 +12,7 @@ import NoRowsOverlay from "./NoRowsOverlay";
 import { GithubUser } from "../api";
 import { registerAgGridModules } from "./agGridModules";
 import { addNewUser } from "../api/github/addNewUser";
+import { findGithubUser } from "../api/github/findGithubUser";
 
 registerAgGridModules();
 
@@ -20,6 +21,8 @@ const DataTable = () => {
   const [username, setUsername] = useState<String>('');
   const [toastMessage, setToastMessage] = useState<String>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [searchUsername, setSearchUsername] = useState<String>("");
+  const [githubUser, setGithubUser] = useState<GithubUser | null>(null);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
     params.api.setGridOption('serverSideDatasource', datasource);
@@ -27,6 +30,14 @@ const DataTable = () => {
 
   const datasource = {
     getRows(params: any) {
+      if(searchUsername.length !== 0) {
+        params.success({
+          rowData: [githubUser],
+          rowCount: 1,
+        });
+        return;
+      }
+      
       const { startRow, endRow, filterModel, sortModel } = params.request;
       const numericColumns = ['followers', 'following'];
       let request: FetchRequest = {
@@ -112,16 +123,25 @@ const DataTable = () => {
       showToast('Please enter a valid username.');
       return;
     }
-    
-    setIsLoading(true)
-    const response = await addNewUser(username);
-    console.log("GOT RESPONSE: ", response)
-    showToast(response);
-    setIsLoading(false)
 
-    if(response === `User ${username} added successfully.`) {
-      window.location.reload();
+    setIsLoading(true)
+    
+    const findUserResponse = await findGithubUser(username);
+    if(!findUserResponse) {                                       // if user not found in database, add user
+      const response = await addNewUser(username);
+      console.log("GOT RESPONSE: ", response)
+      showToast(response);
+
+      if(response === `User ${username} added successfully.`) {
+        window.location.reload();
+      }
+    } else {                                                      // user found in database, show the user data
+      showToast(`User ${username} already exists in database!`)
+      setGithubUser(findUserResponse)
+      setSearchUsername(username)
     }
+
+    setIsLoading(false)
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -168,7 +188,7 @@ const DataTable = () => {
           tooltipShowDelay={0}
           suppressMenuHide={false}
           overlayNoRowsTemplate={'<no-rows-overlay'}
-          debug={true}
+          debug={false}
         />
       </div>
     </div>
