@@ -54,8 +54,8 @@
 
 @keyframes toastAnimation {
   0% { top: -50px; opacity: 0; }
-  50% { top: 50px; opacity: 1; }
-  100% { top: 60px; opacity: 1; }
+  50% { top: 30px; opacity: 1; }
+  100% { top: 50px; opacity: 1; }
 }
 
 @keyframes toastFadeOut {

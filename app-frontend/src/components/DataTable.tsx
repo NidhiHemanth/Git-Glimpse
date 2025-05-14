@@ -124,6 +124,7 @@ const DataTable = () => {
       }
     } else {                                                      // user found in database, show the user data
       showToast(`User ${username} already exists in database!`)
+      handleClearFilters()
       if (gridRef.current && gridApi) {
         const newFilterModel: FilterModel = {
           username: {
