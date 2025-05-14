@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback } from "react";
-import { GridApi, GridReadyEvent, IServerSideDatasource } from "ag-grid-community";
+import { GridApi, GridReadyEvent, FilterModel } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./config/ColumnDefs";
 import { CustomTooltip } from "./config/CustomToolTip";
@@ -21,23 +21,10 @@ const DataTable = () => {
   const [username, setUsername] = useState<String>('');
   const [toastMessage, setToastMessage] = useState<String>('');
   const [isLoading, setIsLoading] = useState(false);
-  const [searchUsername, setSearchUsername] = useState<String>("");
-  const [githubUser, setGithubUser] = useState<GithubUser | null>(null);
-
-  const onGridReady = useCallback((params: GridReadyEvent) => {
-    params.api.setGridOption('serverSideDatasource', datasource);
-  }, [])
+  const [gridApi, setGridApi] = useState<GridApi | null>(null);
 
   const datasource = {
     getRows(params: any) {
-      if(searchUsername.length !== 0) {
-        params.success({
-          rowData: [githubUser],
-          rowCount: 1,
-        });
-        return;
-      }
-      
       const { startRow, endRow, filterModel, sortModel } = params.request;
       const numericColumns = ['followers', 'following'];
       let request: FetchRequest = {
@@ -137,8 +124,16 @@ const DataTable = () => {
       }
     } else {                                                      // user found in database, show the user data
       showToast(`User ${username} already exists in database!`)
-      setGithubUser(findUserResponse)
-      setSearchUsername(username)
+      if (gridRef.current && gridApi) {
+        const newFilterModel: FilterModel = {
+          username: {
+            filterType: 'text',
+            type: 'equals',
+            filter: username,
+          },
+        };
+        gridApi.setFilterModel(newFilterModel);
+      }
     }
 
     setIsLoading(false)
@@ -148,6 +143,11 @@ const DataTable = () => {
     e.preventDefault();
     handleSubmitButton();
   };
+
+  const onGridReady = useCallback((params: GridReadyEvent) => {
+    params.api.setGridOption('serverSideDatasource', datasource);
+    setGridApi(params.api); 
+  }, [])
 
   return (
     <div style={{ height: '90vh', width: '100%', display: 'flex', flexDirection: 'column' }}>
