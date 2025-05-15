@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { GridApi, GridReadyEvent, FilterModel } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./config/ColumnDefs";
@@ -13,6 +13,7 @@ import { GithubUser } from "../api";
 import { registerAgGridModules } from "./agGridModules";
 import { addNewUser } from "../api/github/addNewUser";
 import { findGithubUser } from "../api/github/findGithubUser";
+import { count } from "node:console";
 
 registerAgGridModules();
 
@@ -22,14 +23,20 @@ const DataTable = () => {
   const [toastMessage, setToastMessage] = useState<String>('');
   const [isLoading, setIsLoading] = useState(false);
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
-
+  const blockCursorMap = useRef<Map<number, number>>(new Map([[0, -1]]));
+  
   const datasource = {
     getRows(params: any) {
       const { startRow, endRow, filterModel, sortModel } = params.request;
       const numericColumns = ['followers', 'following'];
+
+      const blockIndex = startRow / (endRow - startRow);
+      const lastId = blockCursorMap.current.get(blockIndex) ?? -1;
+      console.log(`REQUEST: Block ${blockIndex}, using lastId ${lastId}`);
+
       let request: FetchRequest = {
-        lastId: -1,
-        size: 20,
+        lastId: lastId,
+        size: endRow - startRow,
         columnFilters: [],
         sortColumns: []
       }
@@ -58,15 +65,18 @@ const DataTable = () => {
       .then((response) => {
         console.log("RESPONSE = ", response);
 
-        const rowData = response.githubUsers || [];
-        if (rowData.length === 0) {
+        const rowDataResponse = response.githubUsers || [];
+        if (rowDataResponse.length === 0) {
           params.api.showNoRowsOverlay();
         } else {
           params.api.hideOverlay();
+          if(response.lastId !== 0) {
+            blockCursorMap.current.set(blockIndex + 1, response.lastId);
+          }
         }
   
         params.success({
-          rowData: response.githubUsers
+          rowData: response.githubUsers,
         });
 
         setTimeout(() => {
@@ -120,7 +130,8 @@ const DataTable = () => {
       showToast(response);
 
       if(response === `User ${username} added successfully.`) {
-        window.location.reload();
+        blockCursorMap.current = new Map([[0, -1]]);
+        gridRef.current?.api.refreshServerSide({ purge: true });
       }
     } else {                                                      // user found in database, show the user data
       showToast(`User ${username} already exists in database!`)
@@ -174,9 +185,9 @@ const DataTable = () => {
           ref={gridRef}
           rowModelType={'serverSide'}
           //serverSideInfiniteScroll={true}
-          infiniteInitialRowCount={20}
+          infiniteInitialRowCount={30}
           rowBuffer={0}
-          cacheBlockSize={100}
+          cacheBlockSize={10}
           cacheOverflowSize={2}
           maxConcurrentDatasourceRequests={1}
           maxBlocksInCache={5}
