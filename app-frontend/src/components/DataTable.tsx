@@ -63,10 +63,11 @@ const DataTable = () => {
 
       fetchUsers(request)
       .then((response) => {
+        console.log("REQUEST  = ", request);
+        console.log("LAST ID MAP = ", blockCursorMap.current);
         console.log("RESPONSE = ", response);
 
-        const rowDataResponse = response.githubUsers || [];
-        if (rowDataResponse.length === 0) {
+        if (response.githubUsers.length === 0 && response.lastId === 0 && blockIndex === 0) {
           params.api.showNoRowsOverlay();
         } else {
           params.api.hideOverlay();
@@ -186,11 +187,11 @@ const DataTable = () => {
           rowModelType={'serverSide'}
           //serverSideInfiniteScroll={true}
           infiniteInitialRowCount={30}
-          rowBuffer={0}
+          rowBuffer={5}
           cacheBlockSize={10}
-          cacheOverflowSize={2}
+          cacheOverflowSize={5}
           maxConcurrentDatasourceRequests={1}
-          maxBlocksInCache={5}
+          maxBlocksInCache={2}
           onGridReady={onGridReady}
           gridOptions={{ noRowsOverlayComponent: NoRowsOverlay }}
           //datasource={datasource}
