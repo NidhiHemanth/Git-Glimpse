@@ -126,4 +126,5 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [ ] Add a search bar to find a user, if user not present give an option to add user
 - [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
 - [ ] KeyCloak authentication implementation 
+- [ ] Criteria API + Predicate builder implementation for API
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
