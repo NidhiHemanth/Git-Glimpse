@@ -183,7 +183,7 @@ const DataTable = () => {
             placeholder="Enter username" 
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            style={{ padding: '5px', marginRight: '5px' }} 
+            style={{ width: '8rem', padding: '5px', marginRight: '5px' }} 
           />
           <button className="submit-button" onClick={handleSubmitButton} disabled={isLoading}>
             {isLoading ? 'Adding user...' : 'Add User'}
