@@ -1,9 +1,9 @@
 import apiClient from "../axios";
-import { FetchRequest } from "../types/FetchRequest";
+import { FetchRequest, FetchResponse } from "../types/FetchRequest";
 import { handleApiError } from "./handleErrors";
 import { defaultHeaders } from "./getHeader";
 
-export const fetchUsers = async (request: FetchRequest): Promise<any> => {
+export const fetchUsers = async (request: FetchRequest): Promise<FetchResponse> => {
   try {
     const response = await apiClient.post(
       '/fetch', 

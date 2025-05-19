@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback, useEffect } from "react";
+import { useRef, useState, useCallback } from "react";
 import { GridApi, GridReadyEvent, FilterModel } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { columnDefs } from "./config/ColumnDefs";
@@ -13,30 +13,24 @@ import { GithubUser } from "../api";
 import { registerAgGridModules } from "./agGridModules";
 import { addNewUser } from "../api/github/addNewUser";
 import { findGithubUser } from "../api/github/findGithubUser";
-import { count } from "node:console";
 
 registerAgGridModules();
 
 const DataTable = () => {
   const gridRef = useRef<AgGridReact<GithubUser>>(null);
-  const [username, setUsername] = useState<String>('');
+  const [username, setUsername] = useState<string>('');
   const [toastMessage, setToastMessage] = useState<String>('');
   const [isLoading, setIsLoading] = useState(false);
   const [gridApi, setGridApi] = useState<GridApi | null>(null);
-  const blockCursorMap = useRef<Map<number, number>>(new Map([[0, -1]]));
   
   const datasource = {
     getRows(params: any) {
       const { startRow, endRow, filterModel, sortModel } = params.request;
       const numericColumns = ['followers', 'following'];
 
-      const blockIndex = startRow / (endRow - startRow);
-      const lastId = blockCursorMap.current.get(blockIndex) ?? -1;
-      console.log(`REQUEST: Block ${blockIndex}, using lastId ${lastId}`);
-
       let request: FetchRequest = {
-        lastId: lastId,
-        size: endRow - startRow,
+        startRow,
+        endRow,
         columnFilters: [],
         sortColumns: []
       }
@@ -64,20 +58,18 @@ const DataTable = () => {
       fetchUsers(request)
       .then((response) => {
         console.log("REQUEST  = ", request);
-        console.log("LAST ID MAP = ", blockCursorMap.current);
+        console.log("starRow = ", startRow, " & endRow = ", endRow);
         console.log("RESPONSE = ", response);
 
-        if (response.githubUsers.length === 0 && response.lastId === 0 && blockIndex === 0) {
+        if (response.githubUsers.length === 0 && request.startRow === 0 && response.lastRow === -1) {
           params.api.showNoRowsOverlay();
         } else {
           params.api.hideOverlay();
-          if(response.lastId !== 0) {
-            blockCursorMap.current.set(blockIndex + 1, response.lastId);
-          }
         }
   
         params.success({
           rowData: response.githubUsers,
+          rowCount: undefined
         });
 
         setTimeout(() => {
@@ -116,6 +108,19 @@ const DataTable = () => {
     setTimeout(() => setToastMessage(''), 3000); // hide after 3 seconds
   };
 
+  const filterUser = (username: String) => {
+    if (gridRef.current && gridApi) {
+      const newFilterModel: FilterModel = {
+        username: {
+          filterType: 'text',
+          type: 'equals',
+          filter: username,
+        },
+      };
+      gridApi.setFilterModel(newFilterModel);
+    }
+  }
+
   const handleSubmitButton = async () => {
     if (!username.trim()) {
       showToast('Please enter a valid username.');
@@ -131,24 +136,16 @@ const DataTable = () => {
       showToast(response);
 
       if(response === `User ${username} added successfully.`) {
-        blockCursorMap.current = new Map([[0, -1]]);
-        gridRef.current?.api.refreshServerSide({ purge: true });
+        handleClearFilters()
+        filterUser(username)
       }
     } else {                                                      // user found in database, show the user data
       showToast(`User ${username} already exists in database!`)
       handleClearFilters()
-      if (gridRef.current && gridApi) {
-        const newFilterModel: FilterModel = {
-          username: {
-            filterType: 'text',
-            type: 'equals',
-            filter: username,
-          },
-        };
-        gridApi.setFilterModel(newFilterModel);
-      }
+      filterUser(username)
     }
 
+    setUsername('');
     setIsLoading(false)
   };
 
@@ -169,6 +166,7 @@ const DataTable = () => {
           <input 
             type="text" 
             placeholder="Enter username" 
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
             style={{ padding: '5px', marginRight: '5px' }} 
           />

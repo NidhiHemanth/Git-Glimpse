@@ -19,6 +19,8 @@ import java.util.List;
             @ToString etc...
  @Builder - used here so that Request object can be constructed easily
          either in test environment / by any other microservice
+
+ NOTE: Cursor Pagination does not work well with Sorting of data
  */
 
 @Data
@@ -26,14 +28,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GithubUserFetchRequest implements InfiniteScrollRequest, FilterAndSortRequest {
-    // This helps implement Infinite Scrolling with Cursor Pagination
-    // The ID of the last element is retained and is used to fetch next {size} records
+    // Required parameters for implementing infinite scroll using regular Pagination
     @Builder.Default
-    private Long lastId = 0L;
-
-    // The request will return only this size chunk of records
+    private Integer startRow = 0;
     @Builder.Default
-    private Integer size = 0;
+    private Integer endRow = 0;
 
     // A Column filter can either be a String filter / Numeric filter
     @Builder.Default

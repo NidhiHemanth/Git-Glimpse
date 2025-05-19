@@ -1,3 +1,5 @@
+import { GithubUser } from "./GithubUser";
+
 export interface SortColumn {
   column: string,
   sortDirection: 'ascending' | 'descending'
@@ -22,8 +24,13 @@ export interface NumericColumnFilter extends ColumnFilter {
 }
 
 export interface FetchRequest {
-  lastId: number;
-  size: number;
+  startRow: number;
+  endRow: number;
   columnFilters: (StringColumnFilter | NumericColumnFilter)[];
   sortColumns: SortColumn[];
+}
+
+export interface FetchResponse {
+  githubUsers: GithubUser[],
+  lastRow: number
 }

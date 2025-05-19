@@ -14,8 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class GithubUserFetchResponse {
     private List<GithubUserDto> githubUsers;
-
-    // Data from the database is fetched with IDs sorted in DESC order
-    // So the value of lastId will keep decreasing with each subsequent API call
-    private Long lastId;
+    private Integer lastRow;
 }

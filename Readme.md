@@ -42,7 +42,7 @@ An alternative to this method would be to use a library like `jsonschema2pojo` t
 This module contains APIs to perform various operations on the GitHub Users data.
 - It allows filtering of data on selected fields
 - It allows sorting of the resultant data
-- The API supports infinite scroll feature, using Cursor based Pagination
+- The API supports infinite scroll feature, using ~~Cursor~~ Pagination
 
 Add the following Environment Variables while running the SpringBoot Batch application:
 - `spring.profiles.active=local`
@@ -122,8 +122,9 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [x] Add a button to clear all filters
 - [x] Fix sorting of columns
 - [x] Add input field & button to add a new user
-- [ ] Implement infinite scroll
-- [ ] Add a search bar to find a user, if user not present give an option to add user
+- [x] Implement infinite scroll
+- [x] Add a search bar to find a user, if user not present give an option to add user
+- [ ] Change implementation of infinite scroll; cursor based pagination doesn't work well with sorting
 - [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
 - [ ] KeyCloak authentication implementation 
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer

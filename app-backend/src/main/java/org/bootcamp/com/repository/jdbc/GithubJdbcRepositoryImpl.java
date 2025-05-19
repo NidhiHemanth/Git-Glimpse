@@ -40,8 +40,8 @@ public class GithubJdbcRepositoryImpl implements GithubJdbcRepository {
                 sqlQueryBuilder.buildSqlQuery(fetchRequest),
                 (ResultSet rs, int rowNum) -> GithubUserMapper.INSTANCE.fromResultSet(rs, "fetchUsers")
         );
-        final Long lastId = users.isEmpty() ? 0L : users.getLast().getId();
-        return new GithubUserFetchResponse(users.stream().map(GithubUserMapper.INSTANCE::toDto).toList(), lastId);
+        final Integer lastRow = users.isEmpty() ? -1 : fetchRequest.getStartRow() + users.size();
+        return new GithubUserFetchResponse(users.stream().map(GithubUserMapper.INSTANCE::toDto).toList(), lastRow);
     }
 
     @Override

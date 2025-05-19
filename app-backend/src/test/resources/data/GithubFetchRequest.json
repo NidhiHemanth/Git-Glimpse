@@ -1,12 +1,12 @@
 {
-  "lastId": 0,
-  "size": 10,
+  "startRow": 0,
+  "endRow": 10,
   "columnFilters": [
     {
       "columnFilterType": "stringColumnFilter",
       "column": "username",
       "value": "nidhihemanth",
-      "operator": "equal"
+      "operator": "equals"
     },
     {
       "columnFilterType": "stringColumnFilter",
