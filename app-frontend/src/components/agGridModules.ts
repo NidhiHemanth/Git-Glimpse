@@ -1,6 +1,6 @@
 import { ModuleRegistry } from 'ag-grid-community';
 import { ServerSideRowModelModule } from "ag-grid-enterprise";
-import { TextFilterModule, TooltipModule, ColumnApiModule, ColumnAutoSizeModule, ValidationModule, CellStyleModule, NumberFilterModule } from 'ag-grid-community';
+import { TextFilterModule, TooltipModule, ColumnApiModule, ColumnAutoSizeModule, ValidationModule, CellStyleModule, NumberFilterModule, CsvExportModule } from 'ag-grid-community';
 
 export const registerAgGridModules = () => {
   ModuleRegistry.registerModules([
@@ -11,5 +11,6 @@ export const registerAgGridModules = () => {
     ColumnApiModule,
     ColumnAutoSizeModule, CellStyleModule,
     ValidationModule,
+    CsvExportModule,
   ]);
 };

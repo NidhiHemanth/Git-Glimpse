@@ -108,6 +108,21 @@ const DataTable = () => {
     setTimeout(() => setToastMessage(''), 3000); // hide after 3 seconds
   };
 
+  const handleExportToCsv = async () => {
+    if (!gridRef.current || !gridRef.current.api) {
+        showToast('Grid is not ready for export.');
+        return;
+    }
+
+    try {
+      gridRef.current.api.exportDataAsCsv({ fileName: 'github_users.csv' });
+      showToast('Data exported to CSV!');
+    } catch (error) {
+      console.error("Error exporting data:", error);
+      showToast('Failed to export data.');
+    }
+  };
+
   const filterUser = (username: String) => {
     if (gridRef.current && gridApi) {
       const newFilterModel: FilterModel = {
@@ -174,9 +189,14 @@ const DataTable = () => {
             {isLoading ? 'Adding user...' : 'Add User'}
           </button>
         </form>
-        <button className="clear-button" onClick={handleClearFilters}>
-          Clear Filters
-        </button>
+        <div style={{display: 'flex', gap: '10px'}}>
+          <button className="clear-button" onClick={handleClearFilters}>
+            Clear Filters
+          </button>
+          <button className="export" onClick={handleExportToCsv} title="Export CSV">
+            <i className="fas fa-download"></i>
+          </button>
+        </div>
         {toastMessage && <div className="toast">{toastMessage}</div>}
       </div>
       <div style={{ flex: 1, overflow: 'hidden' }} className="ag-theme-alpine">

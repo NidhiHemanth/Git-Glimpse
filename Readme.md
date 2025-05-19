@@ -124,9 +124,9 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [x] Add input field & button to add a new user
 - [x] Implement infinite scroll
 - [x] Add a search bar to find a user, if user not present give an option to add user
-- [ ] Change implementation of infinite scroll; cursor based pagination doesn't work well with sorting
+- [x] Change implementation of infinite scroll; cursor based pagination doesn't work well with sorting
+- [x] Add button to export data to CSV
 - [ ] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
 - [ ] KeyCloak authentication implementation 
 - [ ] Criteria API + Predicate builder implementation for API
-- [ ] Add button to export data to CSV
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
