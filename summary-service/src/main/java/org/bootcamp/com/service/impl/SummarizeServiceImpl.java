@@ -72,7 +72,7 @@ public class SummarizeServiceImpl implements SummarizeService {
     }
 
     private String constructPrompt(String username) {
-        String userRepos = getUserProjects(String.format(Constants.GITHUB_REPOS_URL, username) + "?per_page=15");
+        String userRepos = getUserProjects(String.format(Constants.GITHUB_REPOS_URL, username) + "?per_page=20");
         String starredRepos = getUserProjects(String.format(Constants.GITHUB_STARRED_REPOS_URL, username) + "?per_page=10");
 
         return String.format("""
@@ -101,7 +101,8 @@ public class SummarizeServiceImpl implements SummarizeService {
                 url,
                 HttpMethod.GET,
                 new HttpEntity<>(headers),
-                String.class);
+                String.class
+        );
 
         return response.getBody();
     }

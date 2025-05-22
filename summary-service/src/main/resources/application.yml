@@ -1,0 +1,45 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: Summarize-API
+  data:
+    mongodb:
+      uri: mongodb://${DB_USERNAME}:${DB_PASSWORD}@localhost:27017/github
+      # Alternatively, individual fields can also be defined instead of URI
+#      host: localhost
+#      port: 27017
+#      database: github
+#      username: ${DB_USERNAME}
+#      password: ${DB_PASSWORD}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+
+# http://localhost:8081/swagger-ui/index.html
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    root: WARN
+    org.bootcamp.com: DEBUG
+    org.springframework: INFO
+
+github:
+  api:
+    token: ${GITHUB_API_TOKEN:?GITHUB_API_TOKEN is required}
+
+openai:
+  api:
+    key: ${OPEN_AI_API_KEY:?OPEN_AI_API_KEY is required}
