@@ -6,7 +6,7 @@ spring:
     name: Summarize-API
   data:
     mongodb:
-      uri: mongodb://${DB_USERNAME}:${DB_PASSWORD}@localhost:27017/github
+      uri: mongodb://${DB_USERNAME}:${DB_PASSWORD}@localhost:27017/github?authSource=admin
       # Alternatively, individual fields can also be defined instead of URI
 #      host: localhost
 #      port: 27017
@@ -23,7 +23,7 @@ management:
     health:
       show-details: always
 
-# http://localhost:8081/swagger-ui/index.html
+# http://localhost:8082/swagger-ui/index.html
 springdoc:
   api-docs:
     path: /api-docs
