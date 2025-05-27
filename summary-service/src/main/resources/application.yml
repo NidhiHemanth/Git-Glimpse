@@ -38,8 +38,8 @@ logging:
 
 github:
   api:
-    token: ${GITHUB_API_TOKEN:?GITHUB_API_TOKEN is required}
+    token: ${GITHUB_API_TOKEN:}
 
 openai:
   api:
-    key: ${OPEN_AI_API_KEY:?OPEN_AI_API_KEY is required}
+    key: ${OPEN_AI_API_KEY:}

@@ -29,9 +29,16 @@ public class SummarizeServiceImpl implements SummarizeService {
 
     @Override
     public Optional<String> summarizeGithubUser(String username) {
+        if(openAiApiKey.isEmpty()) {
+            log.error("OPEN_AI_API_KEY not provided, cannot summarize this user {}", username);
+            return Optional.empty();
+        }
+
         final String prompt = constructPrompt(username);
+        log.info("AI Prompt: {}", prompt);
         log.info("API Key prefix: {}", (openAiApiKey != null ? openAiApiKey.substring(0, 5) : "null"));
-        return Optional.ofNullable(getAiSummary(prompt));
+//        return Optional.ofNullable(getAiSummary(prompt));
+        return Optional.of(prompt);
     }
 
     // get their top five projects (in terms of stars, forks, collaborators)
@@ -76,7 +83,7 @@ public class SummarizeServiceImpl implements SummarizeService {
         String starredRepos = getUserProjects(String.format(Constants.GITHUB_STARRED_REPOS_URL, username) + "?per_page=10");
 
         return String.format("""
-            Analyze this GitHub user's personal repository JSON data + starred repositories data and summarize the following about the user:
+              Analyze this GitHub user's personal repository JSON data + starred repositories data and summarize the following about the user:
             - Their top 5 repositories and their summary (based on stars, forks, collaborators)
             - The programming languages they work prefer to work on
             - Their recent technical interest (deduce from starred projects)
@@ -93,9 +100,12 @@ public class SummarizeServiceImpl implements SummarizeService {
     }
 
     private String getUserProjects(String url) {
-        log.info("\tAccessing {} Github API with Access Token (Authenticated)", url);
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + githubApiToken);
+
+        if(!githubApiToken.isEmpty()) {
+            log.info("\tAccessing {} Github API with Access Token {}.. (Authenticated)", url, githubApiToken.substring(0, 5));
+            headers.set("Authorization", "Bearer " + githubApiToken);
+        }
 
         ResponseEntity<String> response = restTemplate.exchange(
                 url,

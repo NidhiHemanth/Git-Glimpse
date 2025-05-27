@@ -5,6 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface UserReactiveService {
     Mono<UserSummary> saveUser(String username);
-    Mono<UserSummary> updateUser(String username);
     Mono<Boolean> findUser(String username);
 }

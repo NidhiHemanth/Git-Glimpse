@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class UserReactiveServiceImpl implements UserReactiveService {
@@ -20,13 +22,10 @@ public class UserReactiveServiceImpl implements UserReactiveService {
     @Override
     public Mono<UserSummary> saveUser(String username) {
         log.info("Adding new user {}", username);
-        return repository.save(new UserSummary(username, "Summary: " + username));
-    }
-
-    @Override
-    public Mono<UserSummary> updateUser(String username) {
-        log.info("Updating user {}", username);
-        return repository.save(new UserSummary(username, "Updated Summary: " + username));
+        final Optional<String> summary = summarizeService.summarizeGithubUser(username);
+        return summary.isEmpty() ?
+                Mono.empty() :
+                repository.save(new UserSummary(username, "Summary: " + username));
     }
 
     @Override
