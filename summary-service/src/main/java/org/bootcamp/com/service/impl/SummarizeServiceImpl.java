@@ -34,11 +34,16 @@ public class SummarizeServiceImpl implements SummarizeService {
             return Optional.empty();
         }
 
+        // TODO: Prompt too long, needs to fetch specific details about user
         final String prompt = constructPrompt(username);
         log.info("AI Prompt: {}", prompt);
+
+        // TODO: Has input length restrictions and the free model does not summarize well
+        final String summary = getAiSummary(prompt);
+        log.info("Summary: {}", summary);
+
         log.info("API Key prefix: {}", (openAiApiKey != null ? openAiApiKey.substring(0, 5) : "null"));
-//        return Optional.ofNullable(getAiSummary(prompt));
-        return Optional.of(prompt);
+        return Optional.of(username);
     }
 
     // get their top five projects (in terms of stars, forks, collaborators)
@@ -49,33 +54,24 @@ public class SummarizeServiceImpl implements SummarizeService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(openAiApiKey);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model", "gpt-3.5-turbo");
-        requestBody.put("messages", List.of(Map.of(
-            "role", "user",
-            "content", prompt
-        )));
+        requestBody.put("inputs", prompt);
 
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                Constants.OPEN_AI_API_URL,
+        ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
+                Constants.HUGGING_FACE_AI_API_URL,
                 HttpMethod.POST,
                 new HttpEntity<>(requestBody, headers),
                 new ParameterizedTypeReference<>() {}
         );
 
-        Map<String, Object> body = response.getBody();
-        if (body == null || !body.containsKey("choices")) {
-            throw new IllegalStateException("Invalid response from OpenAI API: missing 'choices'");
+        List<Map<String, Object>> results = response.getBody();
+        if (results == null || results.isEmpty() || !results.getFirst().containsKey("summary_text")) {
+            throw new IllegalStateException("Invalid response from Hugging Face");
         }
 
-        List<Map<String, Object>> choices = (List<Map<String, Object>>) body.get("choices");
-        if (choices.isEmpty() || !choices.getFirst().containsKey("message")) {
-            throw new IllegalStateException("Invalid response: no message in choices");
-        }
-
-        Map<String, Object> message = (Map<String, Object>) choices.getFirst().get("message");
-        return (String) message.get("content");
+        return results.getFirst().get("summary_text").toString();
     }
 
     private String constructPrompt(String username) {
