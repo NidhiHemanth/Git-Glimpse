@@ -1,5 +1,6 @@
 package org.bootcamp.com.repository.jdbc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.bootcamp.com.request.GithubUserFetchRequest;
 import org.bootcamp.com.request.filter.ColumnFilter;
 import org.bootcamp.com.request.filter.NumericColumnFilter;
@@ -16,12 +17,15 @@ import java.util.stream.Collectors;
 import static org.bootcamp.com.utils.GithubUserMapper.FIELD_TO_COLUMN_MAP;
 
 @Component
+@Slf4j
 public class SqlQueryBuilder {
     public String buildSqlQuery(GithubUserFetchRequest fetchRequest) {
-        return selectQuery(fetchRequest.getTableName()) +
-                filterQuery(fetchRequest.getColumnFilters()) +
-                sortQuery(fetchRequest.getSortColumns()) +
-                offsetQuery(fetchRequest.getStartRow(), fetchRequest.getEndRow());
+        final String query = selectQuery(fetchRequest.getTableName()) +
+                             filterQuery(fetchRequest.getColumnFilters()) +
+                             sortQuery(fetchRequest.getSortColumns()) +
+                             offsetQuery(fetchRequest.getStartRow(), fetchRequest.getEndRow());
+        log.debug("SQL query executed : \n{}", query);
+        return query;
     }
 
     private String selectQuery(String tableName) {

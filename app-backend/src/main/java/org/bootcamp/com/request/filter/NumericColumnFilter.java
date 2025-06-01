@@ -21,9 +21,9 @@ public class NumericColumnFilter extends ColumnFilter {
         EQUALS,
         @JsonProperty("notEqual")
         NOT_EQUALS,
-        @JsonProperty("lessThan")
-        GREATER_THAN,
         @JsonProperty("greaterThan")
+        GREATER_THAN,
+        @JsonProperty("lessThan")
         LESSER_THAN,
         @JsonProperty("toValue")
         IN_RANGE,

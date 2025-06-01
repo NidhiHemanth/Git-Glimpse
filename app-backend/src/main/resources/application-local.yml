@@ -1,1 +1,6 @@
-SQL_IMPLEMENTATION_TYPE: true
+SQL_IMPLEMENTATION_TYPE: false
+
+logging:
+  level:
+    org.hibernate.sql: DEBUG
+    type.descriptor.sql: TRACE

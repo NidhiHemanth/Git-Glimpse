@@ -9,5 +9,4 @@ public interface GithubJdbcRepository {
     GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest);
     int deleteByUsername(String username);
     int addUser(GithubUser githubUser);
-    // API to summarize user projects using openAI API
 }

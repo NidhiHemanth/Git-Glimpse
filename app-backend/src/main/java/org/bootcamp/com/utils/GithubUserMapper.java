@@ -30,6 +30,11 @@ public class GithubUserMapper {
         "mostStarredProjectName", "project_name"
     );
 
+    public static final Map<String,String> COLUMN_TO_FIELD_MAP = Map.of(
+            "full_name", "fullName",
+            "project_name", "mostStarredProjectName"
+    );
+
     // private constructor
     private GithubUserMapper() {}
 

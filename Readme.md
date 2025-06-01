@@ -70,8 +70,9 @@ The application lets you choose the type of database connection using the `SQL_I
   - Hibernate uses JDBC in the background
 - **JPA Repository** - Abstracts all the common database operations.
 - **Entity Manager + Criteria API**
-  - EntityManager is JPA’s core interface for persistence.
+  - EntityManager is JPA’s core interface for persistence, and it provides access to Criteria Builder.
   - Criteria API builds queries like a tree structure using builders
+  - Predicate objects are used to dynamically build conditions
   - More flexible than repositories — great for complex/dynamic queries.
 
 Refer here for [Spring Data JPA](https://youtu.be/GkkcZXF-mD8),
@@ -128,6 +129,6 @@ we don't have all the data available because infinite scroll loads data in chunk
 - [x] Add button to export data to CSV
 - [x] Try alternative free AI APIs instead of OpenAI (Hugging AI / Gemini AI)
 - [ ] KeyCloak authentication implementation 
-- [ ] Criteria API + Predicate builder implementation for API
+- [x] Criteria API + Predicate builder implementation for API
 - [ ] Use GitHub's [GraphQL](https://docs.github.com/en/graphql/overview/explorer) API to fetch data for summarizer
 - [ ] Update Summarizer Service to create a short precise prompt about the user & use a better AI model for summarization

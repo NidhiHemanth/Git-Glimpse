@@ -1,5 +1,6 @@
 package org.bootcamp.com.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.bootcamp.com.config.ApplicationProperties;
 import org.bootcamp.com.constants.Constants;
@@ -9,7 +10,6 @@ import org.bootcamp.com.dto.GithubUserDto;
 import org.bootcamp.com.model.GithubUser;
 import org.bootcamp.com.repository.GithubJdbcRepository;
 import org.bootcamp.com.repository.GithubJpaRepository;
-import org.bootcamp.com.repository.jdbc.SqlQueryBuilder;
 import org.bootcamp.com.request.GithubUserFetchRequest;
 import org.bootcamp.com.response.GithubUserFetchResponse;
 import org.bootcamp.com.service.GithubUserService;
@@ -38,7 +38,6 @@ import java.util.Optional;
 public class GithubUserServiceImpl implements GithubUserService {
     private final GithubJpaRepository githubJpaRepository;
     private final GithubJdbcRepository githubJdbcRepository;
-    private final SqlQueryBuilder sqlQueryBuilder;
     private final RestTemplate restTemplate;
 
     @Autowired
@@ -50,11 +49,9 @@ public class GithubUserServiceImpl implements GithubUserService {
     @Autowired
     public GithubUserServiceImpl(GithubJpaRepository githubJpaRepository,
                                  GithubJdbcRepository githubJdbcRepository,
-                                 SqlQueryBuilder sqlQueryBuilder,
                                  RestTemplateBuilder builder) {
         this.githubJpaRepository = githubJpaRepository;
         this.githubJdbcRepository = githubJdbcRepository;
-        this.sqlQueryBuilder = sqlQueryBuilder;
         this.restTemplate = builder.build();
     }
 
@@ -79,6 +76,7 @@ public class GithubUserServiceImpl implements GithubUserService {
     }
 
     @Override
+    @Transactional
     public int deleteByUsername(String username) {
         final int rowsAffected;
 
@@ -101,9 +99,13 @@ public class GithubUserServiceImpl implements GithubUserService {
 
     @Override
     public GithubUserFetchResponse fetchUsers(GithubUserFetchRequest fetchRequest) {
-        log.info("\t => PROCESSING fetchUsers using JDBC Template");
-        log.debug("SQL query executed : \n{}", sqlQueryBuilder.buildSqlQuery(fetchRequest));
-        return githubJdbcRepository.fetchUsers(fetchRequest);
+        if(applicationProperties.isUseSqlQueries()) {
+            log.info("\t => PROCESSING fetchUsers using JDBC Template");
+            return githubJdbcRepository.fetchUsers(fetchRequest);
+        } else {
+            log.info("\t => PROCESSING fetchUsers using JPA Repository");
+            return githubJpaRepository.fetchUsers(fetchRequest);
+        }
     }
 
     @Override
@@ -117,10 +119,16 @@ public class GithubUserServiceImpl implements GithubUserService {
 
         int rowsAdded;
 
-        log.info("\t => PROCESSING addUser using JDBC Template");
         log.debug("ADDING new GITHUB USER : {}", githubUser);
         try {
-            rowsAdded = githubJdbcRepository.addUser(githubUser);
+            if(applicationProperties.isUseSqlQueries()) {
+                log.info("\t => PROCESSING addUser using JDBC Template");
+                rowsAdded = githubJdbcRepository.addUser(githubUser);
+            } else {
+                log.info("\t => PROCESSING addUser using JPA Repository");
+                githubJpaRepository.save(githubUser);
+                rowsAdded = 1;
+            }
         } catch (DataIntegrityViolationException e) {                       // catches DuplicateKeyException
             log.debug("User {} already exists in database", username);
             return -1;

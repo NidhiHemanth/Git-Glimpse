@@ -115,7 +115,9 @@ const DataTable = () => {
     }
 
     try {
-      gridRef.current.api.exportDataAsCsv({ fileName: 'github_users.csv' });
+      const fileName = `github_users_${new Date().toISOString()}.csv`;
+      // TODO: make API call to export all data
+      gridRef.current.api.exportDataAsCsv({ fileName });
       showToast('Data exported to CSV!');
     } catch (error) {
       console.error("Error exporting data:", error);
