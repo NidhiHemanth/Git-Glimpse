@@ -67,6 +67,29 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.4.0</version>
         </dependency>
+        <!-- Enables Spring Security, the powerful security framework built into Spring Boot.
+             Adds features like: Authentication & Authorization, HTTP Basic / Form Login,
+                                 Request filtering & role-based access control, CSRF protection
+             NOTE: This dependency alone will make your API require authentication by default — even before you configure OAuth2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <!-- Allows your Spring Boot application to act as an OAuth2 Resource Server,
+             i.e a backend API that accepts and validates JWT access tokens (like those from Keycloak).
+             The frontend handles login & sends JWT tokens in requests, and this dependency helps validate those tokens on the backend -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <!--  It includes support for: JOSE (Java Object Signing and Encryption) standards.
+              Which include: JWT (JSON Web Token), JWK (JSON Web Key), JWS (JSON Web Signature)
+              It helps Spring Boot: Decode and verify JWT tokens signed by an authorization server (like Keycloak).
+                                    Deserialize token claims (e.g. username, roles) into Java objects -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-jose</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>

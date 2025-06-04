@@ -12,6 +12,7 @@ import org.bootcamp.com.service.GithubUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 /*
@@ -59,6 +60,7 @@ public class GithubUserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('admin')")
     @Operation(summary = "Delete a User by their Username")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User Deleted successfully"),

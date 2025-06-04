@@ -50,6 +50,17 @@ Add the following Environment Variables while running the SpringBoot Batch appli
 - `DB_PASSWORD=<password>` add your database password
 - `GITHUB_API_TOKEN=<personal access token>` this is optional
 
+Keycloak is used for authentication & authorization.
+
+<details>
+<summary>Click for instructions to set up Keycloak</summary>
+
+&emsp; The user logs in on the frontend (React app using keycloak-js).
+- The frontend sends a JWT token in the Authorization header. 
+- Spring Boot validates the token and authorizes the request.
+
+</details>
+
 Start the SpringBoot Application and access Swagger [here](http://localhost:8081/swagger-ui/index.html).
 
 The application lets you choose the type of database connection using the `SQL_IMPLEMENTATION_TYPE` configuration in `application-local.yml`
@@ -75,7 +86,7 @@ The application lets you choose the type of database connection using the `SQL_I
   - Predicate objects are used to dynamically build conditions
   - More flexible than repositories — great for complex/dynamic queries.
 
-Refer here for [Spring Data JPA](https://youtu.be/GkkcZXF-mD8),
+&emsp; Refer here for [Spring Data JPA](https://youtu.be/GkkcZXF-mD8),
 [JPA vs Entity Manager](https://medium.com/@mgm06bm/jparepository-and-entitymanager-in-spring-data-jpa-e12daad579a7).
 
 </details>
