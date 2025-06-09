@@ -33,6 +33,14 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 
+/*
+ * Any database operation which involves modifying the database (write operations)
+ * should be marked @Transactional in the service layer.
+ *
+ * @Transactional(readOnly = true) can be on read-only operations for
+ * consistent reads, optimize performance, lazy loading etc.
+ */
+
 @Service
 @Slf4j
 public class GithubUserServiceImpl implements GithubUserService {
@@ -109,6 +117,7 @@ public class GithubUserServiceImpl implements GithubUserService {
     }
 
     @Override
+    @Transactional
     public int addUser(String username) {
         // Checking if username is valid & user exists in GitHub
         final GithubUser githubUser = fetchNewGithubUser(username);

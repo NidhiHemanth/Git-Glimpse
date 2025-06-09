@@ -29,14 +29,12 @@ public class GithubService {
     }
 
     @Transactional
-    public GithubUser saveUser(GithubUser githubUser) {
-        final GithubUser persistedGithubUser;
+    public void saveUser(GithubUser githubUser) {
         try {
             log.info("Persisted Github User entity with ID {}", githubUser);
-            persistedGithubUser = githubRepository.save(githubUser);
+            githubRepository.save(githubUser);
         } catch (Exception e) {
             throw new DataPersistenceException(e);
         }
-        return persistedGithubUser;
     }
 }
