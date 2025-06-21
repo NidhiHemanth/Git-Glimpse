@@ -16,6 +16,27 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.mariadb.jdbc.Driver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/myrealm
+      client:
+        registration:
+          keycloak:
+            client-id: backend-api
+            client-secret: hcphWiHgKYAJ95YovhbBN9t8ygcJvPqe
+            scope: openid, profile, email
+            provider: keycloak
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/myrealm
+            authorization-uri: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
+            token-uri: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
+            user-info-uri: http://localhost:8080/realms/myrealm/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
 
 # Configuring Spring Actuator
 # (Check health of the application at http://localhost:8081/actuator/health)
