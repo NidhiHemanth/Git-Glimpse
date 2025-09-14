@@ -22,8 +22,7 @@ public class SecurityConfig {
         http
             // Configures authorization rules for different endpoints
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/").permitAll() // Allows public access to the root URL
-                .requestMatchers("/menu").authenticated() // Requires authentication to access "/menu"
+                .requestMatchers("/api/github/**").hasRole("user")
                 .anyRequest().authenticated() // Requires authentication for any other request
             )
             .oauth2ResourceServer(oauth -> oauth
