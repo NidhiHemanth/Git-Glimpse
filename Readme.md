@@ -4,9 +4,18 @@ Bootcamp is a full-stack project which uses ReactJS for the frontend, SpringBoot
 
 ## How to start the Application
 
-### 1. Start the Backend SpringBoot application
+1. Start the Backend SpringBoot application
+2. Start the Frontend React application
 
-### 2. Start the Frontend React application
+Setting up JWT authentication, CORS, WebSocket, and custom security in this project provides:
+
+- Stateless authentication: JWT allows secure, scalable, stateless user sessions (no server-side session storage). 
+- API security: Only authenticated users can access protected endpoints; tokens are validated on every request. 
+- WebSocket security: Ensures only authenticated users can establish and use real-time connections. 
+- CORS configuration: Allows safe cross-origin requests from your frontend (e.g., React app). 
+- Customizability: You control authentication, authorization, and session management, unlike default Spring Boot setups.
+
+A normal Spring Boot project without these would be less secure, less scalable, and not ready for modern SPA frontends or real-time features.
 
 ## Project Structure
 
@@ -55,9 +64,7 @@ Keycloak is used for authentication & authorization.
 <details>
 <summary>Click for instructions to set up Keycloak</summary>
 
-&emsp; The user logs in on the frontend (React app using keycloak-js).
-- The frontend sends a JWT token in the Authorization header. 
-- Spring Boot validates the token and authorizes the request.
+&emsp; To be updated
 
 </details>
 
@@ -67,29 +74,7 @@ The application lets you choose the type of database connection using the `SQL_I
 1. If enabled, then Spring JDBC (JDBC Templates) are used to connect to the database
 2. If disabled, then Spring Data JPA (Java Persistence API) will be used
 
-<details>
-<summary>Click to learn more about SpringBoot terminology</summary>
-
-- **JDBC** : Low-level API to connect and interact with relational databases (like MySQL, PostgreSQL etc).
-- **Spring JDBC** : Simplifies JDBC by handling connection management, exception translation, and boilerplate code.
-- **ORM** : A programming technique that maps database tables to Java objects. Goals is to avoid writing SQL & work with objects instead.
-- **DAO** : DAO is a design pattern used to separate the low-level data accessing logic from the business logic.
-- **JPA** : Java Persistence API
-  - A standard/specification for ORM in Java (part of Jakarta EE). Not an implementation, but defines how ORM should work.
-  - Spring Data JPA provides ready-to-use interfaces to work with databases.
-- **Hibernate** : A popular ORM framework for Java. Hibernate implements JPA, so using JPA with Hibernate is very common.
-  - Hibernate uses JDBC in the background
-- **JPA Repository** - Abstracts all the common database operations.
-- **Entity Manager + Criteria API**
-  - EntityManager is JPA’s core interface for persistence, and it provides access to Criteria Builder.
-  - Criteria API builds queries like a tree structure using builders
-  - Predicate objects are used to dynamically build conditions
-  - More flexible than repositories — great for complex/dynamic queries.
-
-&emsp; Refer here for [Spring Data JPA](https://youtu.be/GkkcZXF-mD8),
-[JPA vs Entity Manager](https://medium.com/@mgm06bm/jparepository-and-entitymanager-in-spring-data-jpa-e12daad579a7).
-
-</details>
+[Click here](Terminologies.md) to read more about SpringBoot terminology.
 
 The APIs are exposed on Swagger UI / can also be accessed over Postman.
 OAS3 documentation will also be available for the APIs.
