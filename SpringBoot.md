@@ -22,6 +22,7 @@
 ### 3. Spring Framework / Spring Core
 
 - Servlet & JSP (JavaServer Pages) - before Spring Framework
+- SOAP & SOA - before Spring Framework
 - Inversion of Control (IoC)
 - Dependency Injection (@Autowired, @Component)	- key to decoupling 
 - Bean Lifecycle & Scopes for managing object instances 
@@ -66,19 +67,21 @@
 - Password encoding	Secure user passwords
 - CORS & CSRF to Protect front-end integrations
 
-### 8. Spring Cloud
-
-### 9. Microservices Architecture
+### 8. Microservices Architecture
 
 - What is Microservices	- Shift from monoliths
 - Service Design
 - WebFlux (Reactive systems, WebClient)
 - Database per service
 - Inter-service communication - REST, Feign
+- Circuit Breakers (Resilience4J) - Fault tolerance
+- Containerization using Docker & Orchestration using Kubernetes
+
+### 9. Spring Cloud
+
 - Eureka Service Discovery
 - Spring Cloud Gateway	API Gateway
 - Spring Cloud Config - Central config management
-- Circuit Breakers (Resilience4J) - Fault tolerance
 - Load Balancing (Ribbon or Gateway) - Distribute requests
 
 ### 10. Observability & Monitoring
