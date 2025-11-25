@@ -1,6 +1,6 @@
-# Bootcamp Application
+# Git-Glimpse Application
 
-Bootcamp is a full-stack project which uses ReactJS for the frontend, SpringBoot in the backend and MariaDB SQL for the Database.
+Git Glimpse is a full-stack project which uses ReactJS for the frontend, SpringBoot in the backend and MariaDB SQL for the Database.
 
 ## How to start the Application
 
