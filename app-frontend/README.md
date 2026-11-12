@@ -17,6 +17,8 @@ A **proxy** is a stand-in: the browser talks to the dev server, and that host pa
 - The UI is loaded from http://localhost:3000. The grid then requests http://localhost:3000/api/github/fetch. Same scheme, host and port means same origin.
 - This second hop is a server-to-server call. Node does not enforce CORS.
 
+### Grid
+
 AG Grid Enterprise is registered in `src/components/agGridModules.ts` (`ServerSideRowModelModule` plus community filter, tooltip, and CSV modules). Grid options that matter:
 
 - `rowModelType="serverSide"`, `cacheBlockSize={10}`, `maxBlocksInCache={2}`, `maxConcurrentDatasourceRequests={1}`.
@@ -31,7 +33,7 @@ Column defs in `src/components/config/ColumnDefs.tsx`: username, full name, emai
 
 `src/App.test.tsx` still asserts the Create React App string `learn react`. The header text is `Github User Data`, so `npm test` fails on that test until it is updated.
 
-## Start
+### Starting the Application
 
 `app-backend` must already be running on port 8081.
 
@@ -52,15 +54,7 @@ Other scripts from `package.json`:
 | `test` | `react-scripts test` | Jest. `npm test -- --watchAll=false` runs once. |
 | `eject` | `react-scripts eject` | Copies the CRA config into this project. One way. Do not run it as part of normal startup. |
 
-## Swagger
-
-This app does not serve Swagger. The API it calls documents itself at http://localhost:8081/swagger-ui/index.html.
-
-`summary-service` has its own Swagger on port 8082. This UI does not call that service.
-
-## Configuration
-
-No `.env` file is required.
+### Configuration
 
 | Place | Value | What it does |
 | --- | --- | --- |
@@ -73,7 +67,7 @@ No `.env` file is required.
 
 Request body types for `POST /fetch` live in `src/api/types/FetchRequest.ts`. Shared row type: `src/api/types/GithubUser.ts`.
 
-## Dependencies
+### Dependencies
 
 All of these are in `dependencies` in `package.json`. None are under `devDependencies`. Versions below are the ranges in that file. `package-lock.json` pins the installed versions.
 
@@ -106,20 +100,6 @@ TypeScript compiler used by CRA. `strict` is on in `tsconfig.json`. CRA 5 does n
 </details>
 
 <details>
-<summary><code>ag-grid-community</code> ^33.2.4</summary>
-
-AG Grid community modules: column filters, tooltips, and CSV export registered from `agGridModules.ts`.
-
-</details>
-
-<details>
-<summary><code>ag-grid-enterprise</code> ^33.2.4</summary>
-
-Enterprise modules. The server-side row model (`ServerSideRowModelModule`) comes from this package. That is what pages the grid through `POST /api/github/fetch` instead of holding every row in the browser.
-
-</details>
-
-<details>
 <summary><code>ag-grid-react</code> ^33.2.4</summary>
 
 React bindings for AG Grid. `DataTable` renders the grid through this package. Keep the three `ag-grid-*` packages on the same version.
@@ -130,68 +110,5 @@ React bindings for AG Grid. `DataTable` renders the grid through this package. K
 <summary><code>axios</code> ^1.9.0</summary>
 
 HTTP client. One instance in `src/api/axios.ts` with `baseURL` pointed at the backend. Helpers under `src/api/github` (`fetchUsers`, `findGithubUser`, `addNewUser`) use it.
-
-</details>
-
-<details>
-<summary><code>@types/react</code> ^19.1.2</summary>
-
-TypeScript types for React 19.
-
-</details>
-
-<details>
-<summary><code>@types/react-dom</code> ^19.1.3</summary>
-
-TypeScript types for `react-dom`.
-
-</details>
-
-<details>
-<summary><code>@types/node</code> ^16.18.126</summary>
-
-Node.js types for the CRA toolchain and Jest.
-
-</details>
-
-<details>
-<summary><code>@types/jest</code> ^27.5.2</summary>
-
-Jest types for `src/App.test.tsx` and `src/setupTests.ts`.
-
-</details>
-
-<details>
-<summary><code>@testing-library/react</code> ^16.3.0</summary>
-
-Render helpers for component tests.
-
-</details>
-
-<details>
-<summary><code>@testing-library/dom</code> ^10.4.0</summary>
-
-DOM queries used by Testing Library.
-
-</details>
-
-<details>
-<summary><code>@testing-library/jest-dom</code> ^6.6.3</summary>
-
-Custom Jest matchers for DOM nodes. Loaded from the test setup.
-
-</details>
-
-<details>
-<summary><code>@testing-library/user-event</code> ^13.5.0</summary>
-
-Simulated user input for tests. The committed `App.test.tsx` does not drive the grid with it. It still asserts the CRA string `learn react`.
-
-</details>
-
-<details>
-<summary><code>web-vitals</code> ^2.1.4</summary>
-
-Create React App's web-vitals helper. Nothing under `src/` imports it. It is still installed because it is listed in `package.json`.
 
 </details>
