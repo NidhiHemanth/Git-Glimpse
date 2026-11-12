@@ -1,45 +1,46 @@
 # summary-service
 
-Reactive HTTP service that stores a short text summary of a GitHub username in MongoDB. Entry point: `org.bootcamp.com.SummarizerApplication`. Port **8082**. It does not depend on `data-model` and it does not read table `GITHUB_USER`.
+Reactive HTTP service that spins up a short summary of a given GitHub user and persists it in MongoDB. 
+- Entry point: `org.bootcamp.com.SummarizerApplication`. 
+- Port **8082**. 
 
-The grid and `app-backend` do not call this service. You do not start it to run the UI.
+> `summary-service` is not currently in use. Nothing in the grid or the API calls it.
 
-`GET /api/summarize/user/{username}` returns `Mono<ResponseEntity<String>>`. `SummarizeServiceImpl.constructPrompt` loads up to 20 repos and 10 starred repos from GitHub. `getAiSummary` POSTs that text to the Hugging Face inference URL for `facebook/bart-large-cnn`, using `openai.api.key` as the bearer token. `Constants.OPEN_AI_API_URL` is unused. If `OPEN_AI_API_KEY` is empty the method returns `Optional.empty()` and the controller responds 400.
+### API: `GET /api/summarize/user/{username}`
 
-The current save path does not store the model text. `summarizeGithubUser` returns `Optional.of(username)`. `UserReactiveServiceImpl.saveUser` persists `new UserSummary(username, "Summary: " + username)`.
+Takes a `username` as input and returns `Mono<ResponseEntity<String>>` containing the user's GitHub profile summary. 
+- `SummarizeServiceImpl.constructPrompt` loads up to 20 repos and 10 starred repos for the given user from GitHub. 
+- `getAiSummary` POSTs that text to the Hugging Face inference URL for `facebook/bart-large-cnn`, using `openai.api.key` as the bearer token.
+- The summary is returned as the API response.
 
-The Mongo document is `UserSummary` (`username`, `summary`).
+The current save path does not store the model text. Ideally `UserReactiveServiceImpl.saveUser` persists `new UserSummary(username, "Summary: " + username)` into the Mongo document.
 
-## Start
+### Starting the Application
 
-Only when you intend to work on this process. MongoDB must be on `localhost:27017` with database `github` and `authSource=admin`.
-
-From the repo root:
-
-```bash
-mvn -pl summary-service spring-boot:run -Dspring-boot.run.profiles=local
-```
-
-This module does not depend on `data-model`, so `-am` is unnecessary. `application-local.yml` is empty. Profile `local` adds no keys.
-
-Environment variables:
-
+Environment variables to be set in `application-local.yml`:
 - `DB_USERNAME`, `DB_PASSWORD` — MongoDB login inside the connection URI. No default.
 - `GITHUB_API_TOKEN` — optional. Empty default.
 - `OPEN_AI_API_KEY` — required before the summarizer will call the model. Empty default returns 400.
 
-Health: http://localhost:8082/actuator/health
+1. MongoDB service must be running on `localhost:27017` with database `github` and `authSource=admin`. 
+2. From the repo root, run the command
+    ```bash
+    mvn -pl summary-service spring-boot:run -Dspring-boot.run.profiles=local
+    ```
+    - This module does not depend on `data-model`, so `-am` is unnecessary. 
+    - Currently `application-local.yml` is empty. Profile `local` adds no keys.
+3. Verify the application is up with http://localhost:8082/actuator/health.
 
-## Swagger
+### Swagger
 
 - http://localhost:8082/swagger-ui/index.html
 - OpenAPI document: http://localhost:8082/api-docs
 
 `springdoc.swagger-ui.path` is `/swagger-ui.html`. `springdoc.api-docs.path` is `/api-docs`.
 
-## Configuration
+### Configuration
 
-`src/main/resources/application.yml`.
+`src/main/resources/application.yml`
 
 | Key | Value | What it does |
 | --- | --- | --- |
@@ -56,7 +57,7 @@ Health: http://localhost:8082/actuator/health
 
 Compile settings: `java.version` is `21`, POM source/target properties say `23`, and `maven-compiler-plugin` forces source and target **21**.
 
-## Dependencies
+### Dependencies
 
 `spring-boot-starter-data-mongodb` (the blocking driver) is commented out in `pom.xml`. The active Mongo stack is the reactive starter.
 
@@ -123,7 +124,7 @@ Testcontainers module that starts a MongoDB container for tests. Scope `test`. N
 
 </details>
 
-## Build plugins
+### Build plugins
 
 <details>
 <summary><code>spring-boot-maven-plugin</code></summary>
