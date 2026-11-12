@@ -1,8 +1,21 @@
 # app-frontend
 
-Create React App (`react-scripts` 5) with React 19 and TypeScript `strict`. This is not a Maven module. The UI is `App` → `DataTable`. The dev server listens on port **3000**.
+This is a React App with React 19 and TypeScript `strict`. The dev server listens on port **3000**.
 
-There is no dev-server proxy. `src/api/axios.ts` calls `http://localhost:8081/api/github` directly. `app-backend` allows CORS from `http://localhost:3000` only.
+## Proxy
+
+A **proxy** is a stand-in: the browser talks to the dev server, and that host passes the request on.
+- This keeps the browser on one origin, so the API does not need a CORS allowlist for port 3000. 
+- The dev server, is a Node process started by npm start.
+  - The proxy applies only to `npm start`. `npm run build` does not include it.
+- The API host lives in `package.json` instead of in the client. 
+  - `package.json` sets `"proxy": "http://localhost:8081"`.
+- `src/api/axios.ts` uses the relative base URL `/api/github` so the proxy is actually used. 
+
+**CORS** is a rule the browser applies to JavaScript. The *dev server* is not a browser.
+- The browser never calls port 8081 directly, so the browser sends that request with no CORS check.
+- The UI is loaded from http://localhost:3000. The grid then requests http://localhost:3000/api/github/fetch. Same scheme, host and port means same origin.
+- This second hop is a server-to-server call. Node does not enforce CORS.
 
 AG Grid Enterprise is registered in `src/components/agGridModules.ts` (`ServerSideRowModelModule` plus community filter, tooltip, and CSV modules). Grid options that matter:
 
@@ -47,11 +60,12 @@ This app does not serve Swagger. The API it calls documents itself at http://loc
 
 ## Configuration
 
-No `.env` file is required. The API base URL is hard-coded.
+No `.env` file is required.
 
 | Place | Value | What it does |
 | --- | --- | --- |
-| `src/api/axios.ts` `baseURL` | `http://localhost:8081/api/github` | Every grid request. |
+| `package.json` `proxy` | `http://localhost:8081` | Dev server forwards `/api/github` to the API. |
+| `src/api/axios.ts` `baseURL` | `/api/github` | Every grid request, relative to the page. |
 | `src/api/axios.ts` headers | `Accept: application/json` | Axios instance default. |
 | `src/api/github/getHeader.ts` `defaultHeaders` | `Content-Type: application/json` | Headers passed by the API helpers. |
 | `tsconfig.json` | `strict` | TypeScript strict mode. |

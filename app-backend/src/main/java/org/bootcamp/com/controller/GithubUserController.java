@@ -19,10 +19,9 @@ import org.springframework.web.bind.annotation.*;
  @RestController - Automatically serializes return values (Java objects) to JSON / XML.
                    Combines @Controller and @ResponseBody
  @RequestMapping - Maps HTTP requests to handler methods.
- @CrossOrigin - Enables Cross-Origin Resource Sharing (CORS).
-                Allows your API to be accessed from a different domain.
-                EG: frontend on localhost:3000 calling backend on localhost:8080)
-
+ @CrossOrigin    - Disabled. It is used to enable Cross-Origin Resource Sharing (CORS).
+                   The browser enforces this when a browser JavaScript calls another origin (scheme, host or port).
+                   Example: a browser webpage on localhost:3000 (react application) calling localhost:8081 directly.
 
  In modern applications, Entity classes don't have to be declared Serializable because
  Spring uses Jackson to convert your Java objects into JSON and back when dealing with Requests & Responses.
@@ -38,7 +37,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/github")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class GithubUserController {
     @Autowired
     GithubUserService githubUserService;
