@@ -1,18 +1,41 @@
 # data-model
 
-Shared library for the GitHub user row. `data-ingest` and `app-backend` depend on artifact `org.bootcamp.com:data-model:1.0-SNAPSHOT`. This module has no `main` method, no HTTP port, and no `application.yml`.
+Shared library for the GitHub user row in MariaDB. 
+- `data-ingest` and `app-backend` depend on artifact `org.bootcamp.com:data-model:1.0-SNAPSHOT`. 
+- This module has no `main` method, no HTTP port, and no `application.yml`.
 
-Java package: `org.bootcamp.com`.
+### Row mapping
 
-`GithubUser` maps to table `GITHUB_USER`. `id` is `GenerationType.IDENTITY`. `username` is unique and is not part of the primary key. `GithubProject` is `@Embeddable` and is stored as columns on the same row (`project_name`, `project_description`, `project_language`, `project_stargazers`, `project_forks`, `project_url`). Only the user's single most-starred repository is stored.
+`GithubUser` is a JPA `@Entity` on table `GITHUB_USER`. One object is one row. Hibernate creates or updates the table on startup (`ddl-auto: update`).
 
-`@Version` is also `@Transient`, so optimistic locking is not active. Bean validation group `OnCreate` exists. The batch processor validates with the default group, so `@NotBlank(groups = OnCreate.class)` on `username` does not run during ingest.
+- `id` is the primary key (`Long`).
+  - `@Id` marks that column as the primary key.
+  - `@GeneratedValue(strategy = GenerationType.IDENTITY)` makes MariaDB assign it (`AUTO_INCREMENT`). The application does not set it.
+  - A composite primary key was avoided because Spring Data JPA does not support `GenerationType.IDENTITY` with `@IdClass` or `@EmbeddedId`.
+- `username` is the GitHub login and the value the API looks up.
+  - `unique = true` adds a unique constraint. It is not part of the primary key.
+  - `@NotBlank(groups = OnCreate.class)` runs only when validation is asked for the `OnCreate` group. 
+  - `GithubItemMapper` should call `beanValidator.validate(githubUserItem)` with a group argument. Default group does not run the check.
+- `email` is `unique = true` and `@Email`. 
+  - It is not part of the primary key, and the column allows null.
+- Other columns on the same row: `full_name` (max 100), `bio` (length 500), `followers`, `following`, `profile_url`, `avatar_url`.
+- `version` is a `long` that stays in memory.
+  - Optimistic locking is on. With it on, Hibernate would store a counter and update with `WHERE id = ? AND version = ?`, rejecting a write when that counter had already changed. `@Transient` leaves nothing to compare, and `version` is not in the JDBC insert column list, so a second save of the same `id` overwrites the row.
+  - `@Builder.Default` sets the in-memory value to `-1` when Lombok builds an instance.
+  - `@Version` would be Hibernate's optimistic-lock counter.
+  - `@Transient` keeps the field out of the table, so no `version` column is created and updates are not checked against it.
+  - `@Column` is present on the same field and is not mapped.
+- `mostStarredProject` is a `GithubProject`.
+  - `@Embeddable` stores it as columns on the `GITHUB_USER` row. It has no table and no primary key.
+  - Those columns are `project_name`, `project_description`, `project_language`, `project_stargazers`, `project_forks`, `project_url`.
+  - Only the user's single most-starred repository is stored.
 
-JDBC SQL in `app-backend` uses the lowercase name `github_user`. On a case-sensitive MariaDB install that name is a different table from `GITHUB_USER`.
+### Start
 
-## Start
+There is no application to start. Hence, this module does not serve HTTP.
+> This POM does not parent `spring-boot-starter-parent`. It imports the `spring-boot-dependencies` BOM at `3.3.10` so dependency versions resolve. It does not declare `spring-boot-maven-plugin`, so `mvn spring-boot:run` does not apply here.
 
-There is nothing to start. Build or install the jar from the repo root:
+Build or install the jar from the repo root:
 
 ```bash
 mvn -pl data-model test
@@ -21,13 +44,7 @@ mvn -pl data-model install
 
 `data-ingest` and `app-backend` pull this module in with Maven `-am`, so a separate `install` is only needed when you build one of those modules without `-am`.
 
-This POM does not parent `spring-boot-starter-parent`. It imports the `spring-boot-dependencies` BOM at `3.3.10` so dependency versions resolve. It does not declare `spring-boot-maven-plugin`, so `mvn spring-boot:run` does not apply here.
-
-## Swagger
-
-None. This module does not serve HTTP.
-
-## Configuration
+### Configuration
 
 No runtime config. Compile settings in `pom.xml`:
 
@@ -37,7 +54,7 @@ No runtime config. Compile settings in `pom.xml`:
 | `maven.compiler.source` / `target` | `23` | POM properties. The compiler plugin below overrides these. |
 | `maven-compiler-plugin` `source` / `target` | `21` | The values that actually compile this module. Use JDK 21. |
 
-## Dependencies
+### Dependencies
 
 <details>
 <summary><code>spring-boot-starter-data-jpa</code></summary>
@@ -67,7 +84,7 @@ Compile-time annotations on the entity: `@Data`, `@Builder`, `@NoArgsConstructor
 
 </details>
 
-## Build plugins
+### Build plugins
 
 <details>
 <summary><code>maven-compiler-plugin</code> 3.11.0</summary>
