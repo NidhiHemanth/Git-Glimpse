@@ -2,7 +2,41 @@
 
 This is a React App with React 19 and TypeScript `strict`. The dev server listens on port **3000**.
 
-## Proxy
+### Starting the Application
+
+`app-backend` must already be running on port 8081.
+
+```bash
+cd app-frontend
+npm install
+npm start
+```
+
+Open http://localhost:3000.
+
+Other scripts from `package.json`:
+
+| Script | Command | What it does |
+| --- | --- | --- |
+| `start` | `react-scripts start` | Dev server on port 3000 with reload. |
+| `build` | `react-scripts build` | Production bundle in `build/`. |
+| `test` | `react-scripts test` | Jest. `npm test -- --watchAll=false` runs once. |
+| `eject` | `react-scripts eject` | Copies the CRA config into this project. One way. Do not run it as part of normal startup. |
+
+### Configuration
+
+| Place | Value | What it does |
+| --- | --- | --- |
+| `package.json` `proxy` | `http://localhost:8081` | Dev server forwards `/api/github` to the API. |
+| `src/api/axios.ts` `baseURL` | `/api/github` | Every grid request, relative to the page. |
+| `src/api/axios.ts` headers | `Accept: application/json` | Axios instance default. |
+| `src/api/github/getHeader.ts` `defaultHeaders` | `Content-Type: application/json` | Headers passed by the API helpers. |
+| `tsconfig.json` | `strict` | TypeScript strict mode. |
+| `package.json` `browserslist` | CRA defaults | Which browsers the production build targets. |
+
+Request body types for `POST /fetch` live in `src/api/types/FetchRequest.ts`. Shared row type: `src/api/types/GithubUser.ts`.
+
+### Proxy
 
 A **proxy** is a stand-in: the browser talks to the dev server, and that host passes the request on.
 - This keeps the browser on one origin, so the API does not need a CORS allowlist for port 3000. 
@@ -42,39 +76,9 @@ Column defs in `src/components/config/ColumnDefs.tsx`: username, full name, emai
 
 `src/App.test.tsx` still asserts the Create React App string `learn react`. The header text is `Github User Data`, so `npm test` fails on that test until it is updated.
 
-### Starting the Application
+### KeyCloak
 
-`app-backend` must already be running on port 8081.
-
-```bash
-cd app-frontend
-npm install
-npm start
-```
-
-Open http://localhost:3000.
-
-Other scripts from `package.json`:
-
-| Script | Command | What it does |
-| --- | --- | --- |
-| `start` | `react-scripts start` | Dev server on port 3000 with reload. |
-| `build` | `react-scripts build` | Production bundle in `build/`. |
-| `test` | `react-scripts test` | Jest. `npm test -- --watchAll=false` runs once. |
-| `eject` | `react-scripts eject` | Copies the CRA config into this project. One way. Do not run it as part of normal startup. |
-
-### Configuration
-
-| Place | Value | What it does |
-| --- | --- | --- |
-| `package.json` `proxy` | `http://localhost:8081` | Dev server forwards `/api/github` to the API. |
-| `src/api/axios.ts` `baseURL` | `/api/github` | Every grid request, relative to the page. |
-| `src/api/axios.ts` headers | `Accept: application/json` | Axios instance default. |
-| `src/api/github/getHeader.ts` `defaultHeaders` | `Content-Type: application/json` | Headers passed by the API helpers. |
-| `tsconfig.json` | `strict` | TypeScript strict mode. |
-| `package.json` `browserslist` | CRA defaults | Which browsers the production build targets. |
-
-Request body types for `POST /fetch` live in `src/api/types/FetchRequest.ts`. Shared row type: `src/api/types/GithubUser.ts`.
+`SecurityConfig` expects a Keycloak JWT and the React app does not send one. Keycloak setup is still open. Turning that matcher on will block the grid until the client sends a token.
 
 ### Dependencies
 
