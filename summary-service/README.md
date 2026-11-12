@@ -17,7 +17,7 @@ The current save path does not store the model text. Ideally `UserReactiveServic
 
 ### Starting the Application
 
-Environment variables to be set in `application-local.yml`:
+Environment variables to be set in the terminal session using `export VAR_NAME=VAR_VALUE`:
 - `DB_USERNAME`, `DB_PASSWORD` — MongoDB login inside the connection URI. No default.
 - `GITHUB_API_TOKEN` — optional. Empty default.
 - `OPEN_AI_API_KEY` — required before the summarizer will call the model. Empty default returns 400.
