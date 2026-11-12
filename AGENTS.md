@@ -2,7 +2,7 @@
 
 Git Glimpse is a bootcamp full-stack app: a React AG Grid UI over a Spring Boot API, with GitHub user rows stored in MariaDB. A separate Spring Batch job loads the seed JSON. A separate reactive service summarizes a GitHub user and stores that summary in MongoDB.
 
-`Readme.md` is the human setup guide and includes a future design (Keycloak roles, follow/unfollow, Kafka, notifications). This file is the working map of the code that exists today. `Terminologies.md` and `SpringBoot.md` are study notes, not runtime contracts.
+`ReadMe.md` is the human setup guide and includes a future design (Keycloak roles, follow/unfollow, Kafka, notifications). This file is the working map of the code that exists today. `Terminologies.md` and `SpringBoot.md` are study notes, not runtime contracts.
 
 ## Repository map
 
@@ -185,7 +185,7 @@ Match existing style: function components, AG Grid typed with `GithubUser`, API 
 
 `@PreAuthorize` on delete has no effect until `@EnableMethodSecurity` is added. It is not present.
 
-The React app sends no bearer token. Keycloak setup in `Readme.md` is still “To be updated”. A security change that starts enforcing the existing matchers will break the grid until the frontend sends a token and CORS/CSRF still allow `localhost:3000`.
+The React app sends no bearer token. Keycloak setup in `ReadMe.md` is still “To be updated”. A security change that starts enforcing the existing matchers will break the grid until the frontend sends a token and CORS/CSRF still allow `localhost:3000`.
 
 ## Conventions
 
@@ -204,7 +204,7 @@ When you add backend tests, put them in the module you changed and run `mvn -pl 
 
 ## Leave alone unless the task asks
 
-- Planned architecture in `Readme.md`: admin/user roles, follow graph, email, Kafka repo-created events, WebSocket or SSE notifications, Redis, GitHub OAuth, polling scheduler.
+- Planned architecture in `ReadMe.md`: admin/user roles, follow graph, email, Kafka repo-created events, WebSocket or SSE notifications, Redis, GitHub OAuth, polling scheduler.
 - Row-click project summary and in-grid delete. The README describes them; `DataTable` does not implement them.
 - Hard-coded batch file names, chunk size, skip limit, and `System.exit(0)` on success.
 - The summarizer’s placeholder `UserSummary` text described above.
