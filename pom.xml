@@ -21,4 +21,18 @@
         <maven.compiler.target>23</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <!-- Registers the spring-boot prefix for commands run from this aggregator.
+         Modules do not inherit this POM. data-model skips the run goal. -->
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>3.3.10</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>
