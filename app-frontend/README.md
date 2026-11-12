@@ -17,6 +17,15 @@ A **proxy** is a stand-in: the browser talks to the dev server, and that host pa
 - The UI is loaded from http://localhost:3000. The grid then requests http://localhost:3000/api/github/fetch. Same scheme, host and port means same origin.
 - This second hop is a server-to-server call. Node does not enforce CORS.
 
+### API the grid uses
+
+| Method | Path | Behavior |
+| --- | --- | --- |
+| `GET` | `/api/github/user/{username}` | User JSON, or 404 |
+| `GET` | `/api/github/user/add/{username}` | Load that GitHub user and insert one row |
+| `POST` | `/api/github/fetch` | One page of rows, with filters and sort |
+| `GET` | `/api/github/delete/{username}` | Remove a row, or 404 |
+
 ### Grid
 
 AG Grid Enterprise is registered in `src/components/agGridModules.ts` (`ServerSideRowModelModule` plus community filter, tooltip, and CSV modules). Grid options that matter:
