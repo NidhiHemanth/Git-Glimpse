@@ -1,15 +1,26 @@
 # app-backend
 
-REST API for the AG Grid. Entry point: `org.bootcamp.com.BackendApiApplication`. Port **8081**. Base path `/api/github`. Controller: `GithubUserController`. Responses use `GithubUserDto`. Mapping is hand-written in `GithubUserMapper`.
+Backend implementing REST APIs for accessing GitHub User data, and supplying to the AG Grid. 
+- Entry point: `org.bootcamp.com.BackendApiApplication`. Port **8081**. 
+- Base path `/api/github`. 
+- Responses use `GithubUserDto`. Mapping is handwritten in `GithubUserMapper`.
 
-The same operations exist twice. `ApplicationProperties.useSqlQueries` (`impl-type.useSqlQueries`, bound from `SQL_IMPLEMENTATION_TYPE`) chooses the path:
+### JDBC or JPA
 
-- `false` (local profile): Spring Data JPA. `GithubJpaRepository` plus `GithubJpaRepositoryImpl` (Criteria API). That class name and the `Impl` suffix are required. The class is not annotated `@Repository`.
-- `true`: `NamedParameterJdbcTemplate` in `GithubJdbcRepositoryImpl`, SQL assembled by `SqlQueryBuilder`.
+Property `impl-type.useSqlQueries` chooses how this API talks to MariaDB tables:
+- `false` uses JPA with Hibernate
+  - This is the default in `local` profile.
+  - **JPA** (Java Persistence API) is the Java standard for mapping a class to a table and loading rows as objects. Hibernate is the implementation this application uses. 
+  - The application declares an entity, naming its table & columns. **Hibernate** creates the table & writes the objects of that entity in SQL. 
+  - **Spring Data JPA** is a library dependency that provides `JpaRepository`. Hence, when a class extends this interface - it derives common CRUD operations from the entity fields. The `@Repository` annotation marks it as persistence code. 
+  - However, Filters and Sorting operations are complex and the queries are built with the Criteria API.
+- `true` uses JDBC
+  - **JDBC** (Java Database Connectivity) is a standard Java API that lets a Java application connect to a relational database, execute SQL statements, and process the query results.
+  - The **MariaDB driver** is the JDBC implementation this application uses. It is the library that speaks to the MariaDB server. **Spring JDBC** is the helper this application uses.
 
-Infinite scroll is offset paging. AG Grid sends `endRow` as an exclusive index (`cacheBlockSize` is 10). JDBC uses `OFFSET start ROWS FETCH NEXT (end - start) ROWS ONLY`. JPA uses `setFirstResult(startRow)` and `setMaxResults(endRow - startRow + 1)`.
+Hibernate runs once at startup despite the config value, because `ddl-auto: update` creates or alters the `GITHUB_USER` table.
 
-Add and delete are GET on purpose. The React client calls those paths.
+### RESTful API endpoints
 
 | Method | Path | Behavior |
 | --- | --- | --- |
@@ -18,38 +29,35 @@ Add and delete are GET on purpose. The React client calls those paths.
 | `POST` | `/api/github/fetch` | Body `GithubUserFetchRequest`. Returns one page. |
 | `GET` | `/api/github/user/add/{username}` | Loads the user from GitHub and inserts one row. 200 added, 404 unknown GitHub user, 409 already present. |
 
-`addUser` calls `https://api.github.com` for the profile, the first page of followers, the first page of following, and every repo page (`per_page=100`). Follower and following counts are the length of that first page. The most-starred repo is chosen in memory.
+With profile `local`, `SecurityConfig` permits every request and disables CSRF. 
 
-`SecurityConfig` is a servlet OAuth2 resource server. It authenticates every request and requires role `user` on `/api/github/**`. The issuer is `http://localhost:8080/realms/myrealm`. The React app sends no bearer token. Enforcing these matchers blocks the grid until the client sends a token and CORS still allows `http://localhost:3000`.
+> The React app sends no bearer token, and Keycloak is not finished. Without the `local` profile the chain is an OAuth2 resource server: every request must be authenticated, and `/api/github/**` requires role `user`. The issuer is `http://localhost:8080/realms/myrealm`.
 
-## Start
+### Starting the Application
 
-From the repo root, with MariaDB on `localhost:3306` and database `github` created:
+1. Export these environment variables either in the terminal session / add it in `application-local.yml`:
+  - `DB_USERNAME`, `DB_PASSWORD` - MariaDB login.
+  - `GITHUB_API_TOKEN` - optional. Without it, GitHub calls are unauthenticated.
+2. From the repo root, with MariaDB running on `localhost:3306` and database `github` created, run this command:
+    ```bash
+    mvn -pl app-backend -am spring-boot:run -Dspring-boot.run.profiles=local
+    ```
+  - `-am` builds `data-model` first. 
+  - Profile `local` loads `application-local.yml`, which sets `SQL_IMPLEMENTATION_TYPE` to `false` (JPA).
+3. Check Health of the application: http://localhost:8081/actuator/health
 
-```bash
-mvn -pl app-backend -am spring-boot:run -Dspring-boot.run.profiles=local
-```
+### Swagger
 
-`-am` builds `data-model` first. Profile `local` loads `application-local.yml`, which sets `SQL_IMPLEMENTATION_TYPE` to `false` (JPA).
-
-Environment variables with no default in `application.yml`:
-
-- `DB_USERNAME`, `DB_PASSWORD` — MariaDB login.
-- `SQL_IMPLEMENTATION_TYPE` — `true` or `false`, unless profile `local` is active.
-- `GITHUB_API_TOKEN` — optional. Without it, GitHub calls are unauthenticated.
-
-Health: http://localhost:8081/actuator/health
-
-## Swagger
-
-Springdoc OpenAPI UI:
+SpringDoc OpenAPI UI:
 
 - http://localhost:8081/swagger-ui/index.html
 - OpenAPI document: http://localhost:8081/api-docs
 
-`springdoc.swagger-ui.path` is `/swagger-ui.html`. `springdoc.api-docs.path` is `/api-docs`.
+`springdoc.swagger-ui.path` is `/swagger-ui.html`. 
 
-## Configuration
+`springdoc.api-docs.path` is `/api-docs`.
+
+### Configuration
 
 `src/main/resources/application.yml`. Profile `local` adds `application-local.yml`.
 
@@ -66,16 +74,14 @@ Springdoc OpenAPI UI:
 | `spring.security.oauth2.client.registration.keycloak` | client id `backend-api`, authorization code | Client registration for Keycloak. `application.yml` holds the client secret. Do not copy that value into docs, logs, or new config. |
 | `management.endpoints.web.exposure.include` | `health, info` | Actuator endpoints that are exposed. |
 | `management.endpoint.health.show-details` | `always` | Health payload includes detail. |
-| `impl-type.useSqlQueries` | `${SQL_IMPLEMENTATION_TYPE}` | `true` selects JDBC. `false` selects JPA. |
+| `impl-type.useSqlQueries` | `${SQL_IMPLEMENTATION_TYPE}` | `true` selects JDBC. `false` selects JPA. See [JDBC or JPA](#jdbc-or-jpa). |
 | `SQL_IMPLEMENTATION_TYPE` in `application-local.yml` | `false` | Local default is JPA. |
 | `github.api.token` | `${GITHUB_API_TOKEN:}` | Optional GitHub token. Empty default. |
 | `logging.level.org.bootcamp.com` | `DEBUG` | Application logs. Root is `WARN`. |
 
-The service logs `PROCESSING … using JDBC Template` or `using JPA Repository` for the repository path that ran.
-
 Compile settings: `java.version` is `21`, POM source/target properties say `23`, and `maven-compiler-plugin` forces source and target **21**.
 
-## Dependencies
+### Dependencies
 
 <details>
 <summary><code>data-model</code> 1.0-SNAPSHOT</summary>
@@ -129,7 +135,7 @@ Generates the OpenAPI document and the Swagger UI for the servlet stack (Spring 
 <details>
 <summary><code>spring-boot-starter-security</code></summary>
 
-Spring Security filter chain. `SecurityConfig` authenticates every request. CSRF is not disabled. Session policy is not set to stateless. `@PreAuthorize` on delete has no effect until `@EnableMethodSecurity` is added.
+Spring Security filter chain. Profile `local` permits requests and disables CSRF so the grid can call `POST /fetch`. Any other profile authenticates every request. Session policy is not set to stateless. `@PreAuthorize` on delete has no effect until `@EnableMethodSecurity` is added.
 
 </details>
 
@@ -175,7 +181,7 @@ JUnit and Spring Boot test slices. Scope `test`. There is no `*Test.java` in thi
 
 </details>
 
-## Build plugins
+### Build plugins
 
 <details>
 <summary><code>spring-boot-maven-plugin</code></summary>
