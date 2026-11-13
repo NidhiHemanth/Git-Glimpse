@@ -66,7 +66,7 @@ public class GithubUserController {
             @ApiResponse(responseCode = "404", description = "User Not Found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/delete/{username}")
+    @DeleteMapping("/delete/{username}")
     public ResponseEntity<Void> deleteUserByUsername(@PathVariable String username) {
         return new ResponseEntity<>(githubUserService.deleteByUsername(username) > 0 ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
@@ -92,7 +92,7 @@ public class GithubUserController {
             @ApiResponse(responseCode = "409", description = "User Already Exists"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @GetMapping("/user/add/{username}")
+    @PostMapping("/user/add/{username}")
     public ResponseEntity<Void> addUser(@PathVariable String username) {
         final int rowsAdded = githubUserService.addUser(username);
         if(rowsAdded == -1) return new ResponseEntity<>(HttpStatus.CONFLICT);

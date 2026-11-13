@@ -3,7 +3,7 @@ import { defaultHeaders } from "./getHeader";
 
 export const addNewUser = async (username: String): Promise<any> => {
   try {
-    const response = await apiClient.get(
+    const response = await apiClient.post(
       `/user/add/${username}`, 
       { headers: defaultHeaders }
     );

@@ -97,11 +97,11 @@ Base path `/api/github`. Controller is `GithubUserController`. Responses use `Gi
 | Method | Path | Behavior |
 | --- | --- | --- |
 | `GET` | `/user/{username}` | 200 + DTO, or 404 |
-| `GET` | `/delete/{username}` | 200 if a row was removed, otherwise 404. Annotated `@PreAuthorize("hasRole('admin')")` |
+| `DELETE` | `/delete/{username}` | 200 if a row was removed, otherwise 404. Annotated `@PreAuthorize("hasRole('admin')")` |
 | `POST` | `/fetch` | Body `GithubUserFetchRequest`, returns `GithubUserFetchResponse` |
-| `GET` | `/user/add/{username}` | Loads the user from GitHub, inserts one row. 200 added, 404 unknown GitHub user, 409 already present (`addUser` returns `-1` on `DataIntegrityViolationException`) |
+| `POST` | `/user/add/{username}` | Loads the user from GitHub, inserts one row. 200 added, 404 unknown GitHub user, 409 already present (`addUser` returns `-1` on `DataIntegrityViolationException`) |
 
-Delete and add are `GET` on purpose. The React client calls those paths. Changing the verb means changing `src/api/github` in the same change.
+Delete is `DELETE /delete/{username}`. Add is `POST /user/add/{username}`. The React client calls the add path from `src/api/github/addNewUser.ts`. There is no frontend caller for delete.
 
 `addUser` calls `https://api.github.com`: user profile, followers list, following list, and every repo page (`per_page=100`). Follower and following counts are the length of the first page, not the `followers` / `following` fields on the user payload. The most-starred repo is chosen in memory with `max(stargazers_count)`.
 
@@ -171,7 +171,7 @@ Create React App (`react-scripts` 5), React 19, TypeScript `strict`. UI is `App`
 - Datasource in `DataTable` builds `FetchRequest` and calls `fetchUsers` (`POST /fetch`).
 - Sorting and filtering are server-side. The client does not hold the full table.
 - Column defs in `components/config/ColumnDefs.tsx` are the product list: username, full name, email, bio, followers, following, top project. Username and top project render links. Email and bio use tooltips.
-- “Add User” calls `GET /user/{username}` and, on a null result, `GET /user/add/{username}`, then filters the grid to that username.
+- “Add User” calls `GET /user/{username}` and, on a null result, `POST /user/add/{username}`, then filters the grid to that username.
 - “Clear Filters” resets filter model and sort, then `refreshServerSide({ purge: true })`.
 - CSV export uses `exportDataAsCsv` on rows the grid has already loaded. It does not download the whole database.
 

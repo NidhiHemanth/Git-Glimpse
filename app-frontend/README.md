@@ -56,9 +56,9 @@ A **proxy** is a stand-in: the browser talks to the dev server, and that host pa
 | Method | Path | Behavior |
 | --- | --- | --- |
 | `GET` | `/api/github/user/{username}` | User JSON, or 404 |
-| `GET` | `/api/github/user/add/{username}` | Load that GitHub user and insert one row |
+| `POST` | `/api/github/user/add/{username}` | Load that GitHub user and insert one row |
 | `POST` | `/api/github/fetch` | One page of rows, with filters and sort |
-| `GET` | `/api/github/delete/{username}` | Remove a row, or 404 |
+| `DELETE` | `/api/github/delete/{username}` | Remove a row, or 404 |
 
 ### Grid
 
@@ -70,7 +70,7 @@ AG Grid Enterprise is registered in `src/components/agGridModules.ts` (`ServerSi
 
 Column defs in `src/components/config/ColumnDefs.tsx`: username, full name, email, bio, followers, following, top project. Username and top project render links. Email and bio use tooltips.
 
-“Add User” calls `GET /user/{username}` and, on a null result, `GET /user/add/{username}`, then filters the grid to that username. “Clear Filters” resets the filter model and sort, then `refreshServerSide({ purge: true })`. CSV export uses `exportDataAsCsv` on rows the grid has already loaded.
+“Add User” calls `GET /user/{username}` and, on a null result, `POST /user/add/{username}`, then filters the grid to that username. “Clear Filters” resets the filter model and sort, then `refreshServerSide({ purge: true })`. CSV export uses `exportDataAsCsv` on rows the grid has already loaded.
 
 `defaultHeaders` in `src/api/github/getHeader.ts` is only `Content-Type: application/json`. No auth header is attached.
 

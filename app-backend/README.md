@@ -25,9 +25,9 @@ Hibernate runs once at startup despite the config value, because `ddl-auto: upda
 | Method | Path | Behavior |
 | --- | --- | --- |
 | `GET` | `/api/github/user/{username}` | 200 + DTO, or 404 |
-| `GET` | `/api/github/delete/{username}` | 200 when a row was removed, otherwise 404. Annotated `@PreAuthorize("hasRole('admin')")`. `@EnableMethodSecurity` is not present, so that annotation is not applied. |
+| `DELETE` | `/api/github/delete/{username}` | 200 when a row was removed, otherwise 404. Annotated `@PreAuthorize("hasRole('admin')")`. `@EnableMethodSecurity` is not present, so that annotation is not applied. |
 | `POST` | `/api/github/fetch` | Body `GithubUserFetchRequest`. Returns one page. |
-| `GET` | `/api/github/user/add/{username}` | Loads the user from GitHub and inserts one row. 200 added, 404 unknown GitHub user, 409 already present. |
+| `POST` | `/api/github/user/add/{username}` | Loads the user from GitHub and inserts one row. 200 added, 404 unknown GitHub user, 409 already present. |
 
 With profile `local`, `SecurityConfig` permits every request and disables CSRF. 
 
